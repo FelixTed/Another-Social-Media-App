@@ -1,0 +1,46 @@
+body {
+    background-color: rgb(8, 0, 23);
+    cursor: default;
+}
+
+#sidebar {
+    width:20%;
+    background-color: rgb(2, 2, 65);
+    display: flex;
+    flex-direction: column;
+    float: left;
+    padding:10px;
+    
+}
+.sidebarButton{
+    color: white;
+    margin-bottom:25%;
+    background: none;
+    border:none;
+}
+.sidebarButton:hover{
+    background-color: rgba(160, 160, 160, 0.415);
+}
+.title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    font-family:'Sour Gummy',serif;
+    margin-bottom: 40%;
+}
+
+.profile{
+    margin-top: 15%;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.profile > img {
+    width: 1cm;
+    height: 1cm;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 5%;
+}
