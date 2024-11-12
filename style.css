@@ -25,9 +25,23 @@ body {
     margin-bottom:9vh;
     background: none;
     border:none;
+    height: 5vh;
+    border-radius: 5px;
 }
 .sidebar-button:hover{
     background-color: rgba(160, 160, 160, 0.415);
+}
+
+.sidebar-button:hover .button-content{
+    transform: scale(1.2);
+}
+.sidebar-button:active .button-content{
+    color: rgb(141, 140, 140);
+}
+.button-content {
+    padding-left: 10px;
+    float: left;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 .side-buttons-div{
     display: flex;
