@@ -1,21 +1,23 @@
 body {
     background-color: rgb(8, 0, 23);
     cursor: default;
+    margin: 0;
+    padding: 0;
 }
 
 #sidebar {
+    overflow-y: auto ;
     width:20%;
-    height: 100vh;
+    height: 98vh;
     background-color: rgb(2, 2, 65);
     display: flex;
     flex-direction: column;
     float: left;
-    padding:10px;
-    
+    padding:1vh;
 }
 .sidebarButton{
     color: white;
-    margin-bottom:10vh;
+    margin-bottom:9vh;
     background: none;
     border:none;
 }
