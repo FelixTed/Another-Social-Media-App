@@ -5,6 +5,7 @@ body {
 
 #sidebar {
     width:20%;
+    height: 100vh;
     background-color: rgb(2, 2, 65);
     display: flex;
     flex-direction: column;
@@ -14,7 +15,7 @@ body {
 }
 .sidebarButton{
     color: white;
-    margin-bottom:25%;
+    margin-bottom:10vh;
     background: none;
     border:none;
 }
@@ -27,11 +28,11 @@ body {
     align-items: center;
     justify-content: flex-start;
     font-family:'Sour Gummy',serif;
-    margin-bottom: 40%;
+    margin-bottom: 20vh;
 }
 
 .profile{
-    margin-top: 15%;
+    margin-top: 20vh;
     color: white;
     display: flex;
     align-items: center;
