@@ -3,17 +3,23 @@ body {
     cursor: default;
     margin: 0;
     padding: 0;
+    align-items: center;
 }
 
+
+
 #sidebar {
-    overflow-y: auto ;
     width:20%;
-    height: 98vh;
+    height: 95vh;
     background-color: rgb(2, 2, 65);
     display: flex;
     flex-direction: column;
     float: left;
     padding:1vh;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 .sidebarButton{
     color: white;
