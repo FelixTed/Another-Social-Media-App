@@ -3,7 +3,6 @@ body {
     cursor: default;
     margin: 0;
     padding: 0;
-    align-items: center;
 }
 
 
@@ -21,14 +20,18 @@ body {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
-.sidebarButton{
+.sidebar-button{
     color: white;
     margin-bottom:9vh;
     background: none;
     border:none;
 }
-.sidebarButton:hover{
+.sidebar-button:hover{
     background-color: rgba(160, 160, 160, 0.415);
+}
+.side-buttons-div{
+    display: flex;
+    flex-direction: column;
 }
 .title {
     display: flex;
@@ -36,7 +39,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     font-family:'Sour Gummy',serif;
-    margin-bottom: 20vh;
+    margin-bottom: 10vh;
 }
 
 .profile{
@@ -44,6 +47,7 @@ body {
     color: white;
     display: flex;
     align-items: center;
+    margin-top: auto;
 }
 
 .profile > img {
