@@ -7,6 +7,13 @@ body {
     display: flex;
 }
 
+.sticky {
+    position: sticky;
+    left: 0;
+    background-color: rgb(2, 2, 65);
+    z-index: 1; 
+}
+
 .page{
     display: flex;
     width: 100%;
@@ -61,6 +68,7 @@ body {
 }
 
 .profile{
+    font-family:'Sour Gummy',serif;
     margin-top: 20vh;
     color: white;
     display: flex;
@@ -86,4 +94,34 @@ body {
     padding: 10px;
     width: 80%;
     height: 10%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.story > span{
+  white-space: nowrap;      
+  overflow: hidden;         
+  text-overflow: ellipsis;  
+  min-width: 1.5cm; 
+  max-width: 1.5cm;          
+}
+.stories-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.story{
+    font-family: "Dancing Script", cursive;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto;
+}
+.story > img {
+    width: 1cm;
+    height: 1cm;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 5%;
 }
