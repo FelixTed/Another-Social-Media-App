@@ -12,7 +12,6 @@ body {
     display: flex;
     flex-direction: column;
     width: 80%;
-    background-color: green;
 }
 
 .title-container {
@@ -106,7 +105,7 @@ body {
     align-items: center;
     margin-left: 10px;
     padding: 10px;
-    height: 10%;
+    height: 1.5cm;
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -131,7 +130,7 @@ body {
   max-width: 1.5cm;          
 }
 .stories-list::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
 .story{
@@ -146,11 +145,53 @@ body {
 }
 
 .post-container{
-    background-color: red;
     height: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    overflow:scroll;
+    
+}
+
+.post-container::-webkit-scrollbar {
+    display: none;
 }
 
 .post-content {
-    max-width: 75%;
     max-height: 50vh;
+    max-width: 50vw;
+}
+
+.post {
+    max-width: 75%;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center; /* Center entire content of the post */
+    text-align: center;  /* Center-align text */
+}
+
+.post-profile {
+    font-family: 'Sour Gummy', serif;
+    color: white;
+    display: inline-flex; /* Use inline-flex to avoid block-level stretching */
+    align-items: center; /* Vertically align image and text */
+    gap: 10px; /* Space between profile pic and username */
+    margin: 10px 0; /* Spacing above and below */
+    width: 100%;
+    justify-content: left;
+}
+.post-icons {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.post-caption {
+    font-family: 'Sour Gummy', serif;
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: left;
 }
