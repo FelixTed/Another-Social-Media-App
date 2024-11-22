@@ -150,13 +150,13 @@ function getObjectById(collection, id) {
 }
 
 //You want to be logged in as a current user, this will be expanded upon later when API is done
-currentUser = user3.id;
+let currentUser = user3.id;
 const postContainer = document.getElementById('post-container');
+let loadedPosts = 0;
+let postsPerLoads = 10;
 
-returnPosts();
 
 function returnPosts(){
-    // Put all the posts in the feed in a sorted by date order
    // Collect all posts from followed users
    let postsOnFeed = [];
    getObjectById('users', currentUser).following.forEach(userId => {
@@ -172,63 +172,84 @@ function returnPosts(){
    });
     // Sort by descending order based on the date
     postsOnFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-    postsOnFeed.forEach(element => {
-        const divPost = document.createElement('div');
-        divPost.setAttribute('class','post');
 
-        const divPostProfile = document.createElement('div');
-        divPostProfile.setAttribute('class','post-profile');
+    // Get the next set of posts
+    const newPosts = postsOnFeed.slice(loadedPosts, loadedPosts + postsPerLoads);
+    newPosts.forEach(renderPosts);
 
-        const profileImage = document.createElement('img');
-        profileImage.setAttribute('class', 'profile-img');
-        profileImage.setAttribute('src', getObjectById('users',element.ownerId).profilePic);
+    // Update the count of loaded posts
+    loadedPosts += newPosts.length;
 
-        const username = document.createElement('span');
-        username.innerHTML = getObjectById('users', element.ownerId).name;
+    // Stop loading if all posts are loaded
+    if (loadedPosts >= postsOnFeed.length) {
+        window.removeEventListener('scroll', onScroll);
+    }
 
-        const postContent = document.createElement('img');
-        postContent.setAttribute('class', 'post-content');
-        postContent.setAttribute('src', element.content);
-
-        const iconsDiv = document.createElement('div');
-        iconsDiv.setAttribute('class', 'post-icons');
-
-        const likesIcon = document.createElement('i');
-        likesIcon.setAttribute('class','material-icons');
-        likesIcon.setAttribute('style','color:white;');
-        likesIcon.innerHTML = 'favorite';
-
-        const likesCount = document.createElement('span');
-        likesCount.innerHTML = element.likes;
-
-        const commentIcon = document.createElement('i');
-        commentIcon.setAttribute('class','material-icons');
-        commentIcon.setAttribute('style','color:white;');
-        commentIcon.innerHTML = 'comment';
-
-        const commentsCount = document.createElement('span');
-        commentsCount.innerHTML = element.comments.length;
-
-        const postCaption = document.createElement('span');
-        postCaption.setAttribute('class','post-caption');
-        postCaption.innerHTML = element.caption;
-
-        divPost.appendChild(divPostProfile);
-        divPostProfile.appendChild(profileImage);
-        divPostProfile.appendChild(username);
-
-        divPost.appendChild(postContent);
-
-        divPost.appendChild(iconsDiv);
-        iconsDiv.appendChild(likesIcon);
-        iconsDiv.appendChild(likesCount);
-        iconsDiv.appendChild(commentIcon);
-        iconsDiv.appendChild(commentsCount);
-
-        divPost.appendChild(postCaption);
-
-        postContainer.appendChild(divPost);
-
-    });
 }
 
+function renderPosts(element){
+    const divPost = document.createElement('div');
+    divPost.setAttribute('class','post');
+
+    const divPostProfile = document.createElement('div');
+    divPostProfile.setAttribute('class','post-profile');
+
+    const profileImage = document.createElement('img');
+    profileImage.setAttribute('class', 'profile-img');
+    profileImage.setAttribute('src', getObjectById('users',element.ownerId).profilePic);
+
+    const username = document.createElement('span');
+    username.innerHTML = getObjectById('users', element.ownerId).name;
+
+    const postContent = document.createElement('img');
+    postContent.setAttribute('class', 'post-content');
+    postContent.setAttribute('src', element.content);
+
+    const iconsDiv = document.createElement('div');
+    iconsDiv.setAttribute('class', 'post-icons');
+
+    const likesIcon = document.createElement('i');
+    likesIcon.setAttribute('class','material-icons');
+    likesIcon.setAttribute('style','color:white;');
+    likesIcon.innerHTML = 'favorite';
+
+    const likesCount = document.createElement('span');
+    likesCount.innerHTML = element.likes;
+
+    const commentIcon = document.createElement('i');
+    commentIcon.setAttribute('class','material-icons');
+    commentIcon.setAttribute('style','color:white;');
+    commentIcon.innerHTML = 'comment';
+
+    const commentsCount = document.createElement('span');
+    commentsCount.innerHTML = element.comments.length;
+
+    const postCaption = document.createElement('span');
+    postCaption.setAttribute('class','post-caption');
+    postCaption.innerHTML = element.caption;
+
+    divPost.appendChild(divPostProfile);
+    divPostProfile.appendChild(profileImage);
+    divPostProfile.appendChild(username);
+
+    divPost.appendChild(postContent);
+
+    divPost.appendChild(iconsDiv);
+    iconsDiv.appendChild(likesIcon);
+    iconsDiv.appendChild(likesCount);
+    iconsDiv.appendChild(commentIcon);
+    iconsDiv.appendChild(commentsCount);
+
+    divPost.appendChild(postCaption);
+
+    postContainer.appendChild(divPost);
+}
+
+function onScroll() {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        returnPosts();
+    }
+}
+
+returnPosts();
+window.addEventListener('scroll', onScroll);
