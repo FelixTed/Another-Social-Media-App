@@ -64,7 +64,8 @@ const post1 = {
     likes: 105,
     comments: [comment1.id,comment2.id],
     caption: 'The goat himself',
-    date: "2024-11-20T00:00:00Z"
+    date: "2024-11-20T00:00:00Z",
+    likedBy: [user1.id]
 }
 
 const post2 = {
@@ -74,7 +75,8 @@ const post2 = {
     likes: 1,
     comments: [],
     caption: 'some picture i took',
-    date: "2004-11-20T00:00:00Z"
+    date: "2004-11-20T00:00:00Z",
+    likedBy: []
 }
 
 const post3 = {
@@ -84,7 +86,20 @@ const post3 = {
     likes: 1,
     comments: [],
     caption: 'some picture i took',
-    date: "2004-11-20T00:00:00Z"
+    date: "2004-11-20T00:00:00Z",
+    likedBy: [user1.id,user3.id,user2.id]
+}
+
+
+const post4 = {
+    id: generateId(),
+    ownerId:user2.id,
+    content: 'https://cdn3.photoblogstop.com/wp-content/uploads/2012/07/Sierra_HDR_Panorama_DFX8048_2280x819_Q40_wm_mini.jpg',
+    likes: 1,
+    comments: [],
+    caption: 'some picture i took',
+    date: "2004-11-20T00:00:00Z",
+    likedBy: []
 }
 
 const message1 = {
@@ -124,6 +139,7 @@ user1.postHistory.push(post1.id);
 user1.followers.push(user3.id);
 user2.followers.push(user3.id);
 user2.postHistory.push(post3.id);
+user2.postHistory.push(post4.id);
 user3.postHistory.push(post2.id);
 user1.stories.push(story1.id);
 
@@ -141,7 +157,7 @@ user3.chats.push(chat1.id);
 // This will need to be updated to be created dinamically depending on data sent from API
 const dataStore = {
     users: { [user1.id]: user1, [user2.id]: user2, [user3.id]: user3 },
-    posts: { [post1.id]: post1, [post2.id]: post2, [post3.id]: post3},
+    posts: { [post1.id]: post1, [post2.id]: post2, [post3.id]: post3, [post4.id]: post4},
     comments: { [comment1.id]: comment1, [comment2.id]: comment2 },
 };
 
@@ -210,11 +226,29 @@ function renderPosts(element){
 
     const likesIcon = document.createElement('i');
     likesIcon.setAttribute('class','material-icons');
-    likesIcon.setAttribute('style','color:white;');
+    if (element.likedBy.has(currentUser.id))
+        likesCount.setAttribute('style','color:red')
+    else
+        likesIcon.setAttribute('style','color:white;');
     likesIcon.innerHTML = 'favorite';
 
+    
     const likesCount = document.createElement('span');
     likesCount.innerHTML = element.likes;
+    
+    likesIcon.addEventListener('click', () => {
+        if (element.likedBy.has(currentUser.id)){
+            element.likes--;
+            likesCount.innerHTML = element.likes;
+            likesIcon.setAttribute('style','color:white;');
+            element.likedBy.delete(currentUser.id);
+        }else{
+        element.likes++;
+        likesCount.innerHTML = element.likes;
+        likesIcon.setAttribute('style','color:red;');
+        element.likedBy.add(currentUser.id);
+        }
+    })
 
     const commentIcon = document.createElement('i');
     commentIcon.setAttribute('class','material-icons');
@@ -245,11 +279,21 @@ function renderPosts(element){
     postContainer.appendChild(divPost);
 }
 
-function onScroll() {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+
+function onScroll(){
+    if (postContainer.scrollTop + postContainer.clientHeight >= postContainer.scrollHeight) {
         returnPosts();
+        console.log("YOU SCROLLED TKUHEJKLGSGH")
     }
 }
 
+// Checks if user it at the end of the page and loads more posts if possible
+postContainer.addEventListener('scroll', onScroll);
+
+//Set all post likedBy lists to a set for faster lookup
+Object.values(dataStore.posts).forEach(post => {
+    post.likedBy = new Set(post.likedBy);
+});
+
+// Loads the first batch of posts
 returnPosts();
-window.addEventListener('scroll', onScroll);
