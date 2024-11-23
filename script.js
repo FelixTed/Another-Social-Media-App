@@ -36,7 +36,7 @@ const user3 = {
     following:[user1.id,user2.id],
     followers:[],
     postHistory:[],
-    name: 'DAVE',
+    name: 'Alexis',
     profilePic: 'https://encrypted-tbn0.gstatic.com/https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webpimages?q=tbn:ANd9GcRTxhrGftJL1LaWjuopgrIqA14kTbj96yQHcQ&s',
     bio: 'Wesh',
     stories: [],
@@ -57,6 +57,13 @@ const comment2 = {
     content: 'bloc majoritaire'
 }
 
+const comment3 = {
+    id: generateId(),
+    ownerId: user2.id,
+    postId: null,
+    content: 'nice pic'
+}
+
 const post1 = {
     id: generateId(),
     ownerId:user1.id,
@@ -65,7 +72,7 @@ const post1 = {
     comments: [comment1.id,comment2.id],
     caption: 'The goat himself',
     date: "2024-11-20T00:00:00Z",
-    likedBy: [user1.id]
+    likedBy: [user1.id,user3.id]
 }
 
 const post2 = {
@@ -76,7 +83,7 @@ const post2 = {
     comments: [],
     caption: 'some picture i took',
     date: "2004-11-20T00:00:00Z",
-    likedBy: []
+    likedBy: [user3.id]
 }
 
 const post3 = {
@@ -135,6 +142,7 @@ const story1 = {
     date: "2024-12-01T00:10:00Z"
 }
 
+
 user1.postHistory.push(post1.id);
 user1.followers.push(user3.id);
 user2.followers.push(user3.id);
@@ -148,6 +156,7 @@ message2.chatId = chat1.id;
 
 comment1.postId = post1.id;
 comment2.postId = post2.id;
+comment3.postId = post3.id;
 
 user1.chats.push(chat1.id);
 user2.chats.push(chat1.id);
@@ -158,7 +167,7 @@ user3.chats.push(chat1.id);
 const dataStore = {
     users: { [user1.id]: user1, [user2.id]: user2, [user3.id]: user3 },
     posts: { [post1.id]: post1, [post2.id]: post2, [post3.id]: post3, [post4.id]: post4},
-    comments: { [comment1.id]: comment1, [comment2.id]: comment2 },
+    comments: { [comment1.id]: comment1, [comment2.id]: comment2, [comment3.id]:comment3 },
 };
 
 function getObjectById(collection, id) {
@@ -226,10 +235,12 @@ function renderPosts(element){
 
     const likesIcon = document.createElement('i');
     likesIcon.setAttribute('class','material-icons');
-    if (element.likedBy.has(currentUser.id))
-        likesCount.setAttribute('style','color:red')
-    else
+    if (element.likedBy.has(currentUser)){
+        likesIcon.setAttribute('style','color:red');
+    }
+    else{
         likesIcon.setAttribute('style','color:white;');
+    }
     likesIcon.innerHTML = 'favorite';
 
     
@@ -237,16 +248,16 @@ function renderPosts(element){
     likesCount.innerHTML = element.likes;
     
     likesIcon.addEventListener('click', () => {
-        if (element.likedBy.has(currentUser.id)){
+        if (element.likedBy.has(currentUser)){
             element.likes--;
             likesCount.innerHTML = element.likes;
             likesIcon.setAttribute('style','color:white;');
-            element.likedBy.delete(currentUser.id);
+            element.likedBy.delete(currentUser);
         }else{
         element.likes++;
         likesCount.innerHTML = element.likes;
         likesIcon.setAttribute('style','color:red;');
-        element.likedBy.add(currentUser.id);
+        element.likedBy.add(currentUser);
         }
     })
 
@@ -254,6 +265,10 @@ function renderPosts(element){
     commentIcon.setAttribute('class','material-icons');
     commentIcon.setAttribute('style','color:white;');
     commentIcon.innerHTML = 'comment';
+
+    commentIcon.addEventListener('click',() => {
+        displayComments(element)
+    })
 
     const commentsCount = document.createElement('span');
     commentsCount.innerHTML = element.comments.length;
@@ -279,11 +294,44 @@ function renderPosts(element){
     postContainer.appendChild(divPost);
 }
 
+// Displays the comments 
+function displayComments(selectedPost){
+
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.style.display = 'flex';
+
+    const closeComments = document.createElement('i'); 
+    closeComments.setAttribute('class','material-icons');
+    closeComments.setAttribute('style','color:white; width: fit-content;');
+    closeComments.innerHTML = 'close';
+
+    closeComments.addEventListener('click', () =>{
+        commentsContainer.innerHTML = ''
+        commentsContainer.style.display = 'none';
+    });
+    commentsContainer.appendChild(closeComments);
+    selectedPost.comments.forEach((commentId) => {
+        const comment = getObjectById('comments',commentId);
+
+        const content = 
+        `<div class = 'comment'>
+                <div class="profile">
+                    <img class="profile-img" src=${getObjectById('users',comment.ownerId).profilePic}>
+                    <span>${getObjectById('users',comment.ownerId).name}</span>
+                </div>
+                <span>${comment.content}</span>
+            </div>
+        </div>`;
+
+        commentsContainer.insertAdjacentHTML('beforeend',content);
+    });
+
+}
 
 function onScroll(){
     if (postContainer.scrollTop + postContainer.clientHeight >= postContainer.scrollHeight) {
         returnPosts();
-        console.log("YOU SCROLLED TKUHEJKLGSGH")
+        console.log("YOU SCROLLED")
     }
 }
 
@@ -291,8 +339,8 @@ function onScroll(){
 postContainer.addEventListener('scroll', onScroll);
 
 //Set all post likedBy lists to a set for faster lookup
-Object.values(dataStore.posts).forEach(post => {
-    post.likedBy = new Set(post.likedBy);
+Object.values(dataStore.posts).forEach(element => {
+    element.likedBy = new Set(element.likedBy);
 });
 
 // Loads the first batch of posts
