@@ -217,6 +217,7 @@ body {
 
 #comments-box {
     overflow-y: scroll;
+    height:1000px;
 }
 
 #comments-box::-webkit-scrollbar {

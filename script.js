@@ -271,6 +271,7 @@ function renderPosts(element){
     })
 
     const commentsCount = document.createElement('span');
+    commentsCount.setAttribute('id',element.id);
     commentsCount.innerHTML = element.comments.length;
 
     const postCaption = document.createElement('span');
@@ -309,7 +310,13 @@ function displayComments(selectedPost){
         commentsContainer.innerHTML = ''
         commentsContainer.style.display = 'none';
     });
+
+    const commentsBox = document.createElement('div');
+    commentsBox.setAttribute('id','comments-box')
+
     commentsContainer.appendChild(closeComments);
+    commentsContainer.appendChild(commentsBox);
+    
     selectedPost.comments.forEach((commentId) => {
         const comment = getObjectById('comments',commentId);
 
@@ -323,8 +330,33 @@ function displayComments(selectedPost){
             </div>
         </div>`;
 
-        commentsContainer.insertAdjacentHTML('beforeend',content);
+        commentsBox.insertAdjacentHTML('beforeend',content);
+
     });
+    
+    const commentInput = document.createElement('input');
+    commentInput.setAttribute('placeholder','Enter comment...');
+
+    // Add comment when enter is pressed
+    commentInput.addEventListener('keydown',(event) =>{
+        if (event.key === "Enter") {
+            const newComment = {
+                id: generateId(),
+                ownerId: currentUser,
+                postId: selectedPost.id,
+                content: event.target.value
+            }
+
+            dataStore['comments'][newComment.id] = newComment;
+            selectedPost.comments.push(newComment.id);
+            commentsContainer.innerHTML = '';
+            document.getElementById(selectedPost.id).innerHTML = selectedPost.comments.length;
+            displayComments(selectedPost);
+        }
+
+    });
+
+    commentsContainer.appendChild(commentInput);
 
 }
 
