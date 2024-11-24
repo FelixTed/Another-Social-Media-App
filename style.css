@@ -110,7 +110,7 @@ body {
     overflow-y: hidden;
 }
 
-.stories-list {
+#stories-list {
     background-color: rgb(2, 2, 65);
     border-radius: 5px;
     display: flex;
@@ -129,7 +129,7 @@ body {
   min-width: 1.5cm; 
   max-width: 1.5cm;          
 }
-.stories-list::-webkit-scrollbar {
+#stories-list::-webkit-scrollbar {
     display: none;
 }
 

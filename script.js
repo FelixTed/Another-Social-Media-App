@@ -25,7 +25,7 @@ const user2 = {
     followers:[user1.id],
     postHistory:[],
     name: 'VLAD',
-    profilePic: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+    profilePic: 'https://img.decrypt.co/insecure/rs:fit:1920:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2024/11/chillguy-1-gID_7.jpg@webp',
     bio: 'BLYAT',
     stories: [],
     chats: [],
@@ -142,6 +142,19 @@ const story1 = {
     date: "2024-12-01T00:10:00Z"
 }
 
+const story2 = {
+    id: generateId(),
+    ownerId: user2.id,
+    content: 'https://i.ytimg.com/vi/5v56YjZzH5A/maxresdefault.jpg',
+    date: '2024-10-02T04:10:00Z'
+}
+
+const story3 = {
+    id: generateId(),
+    ownerId: user2.id,
+    content: 'https://i.ytimg.com/vi/_mPDAQm58i8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLC6FUnQqoRI2VllYnROF6rX-nmR7w',
+    date: '2024-10-02T05:10:00Z'
+}
 
 user1.postHistory.push(post1.id);
 user1.followers.push(user3.id);
@@ -150,6 +163,8 @@ user2.postHistory.push(post3.id);
 user2.postHistory.push(post4.id);
 user3.postHistory.push(post2.id);
 user1.stories.push(story1.id);
+user2.stories.push(story2.id);
+user2.stories.push(story3.id);
 
 message1.chatId = chat1.id;
 message2.chatId = chat1.id;
@@ -168,6 +183,7 @@ const dataStore = {
     users: { [user1.id]: user1, [user2.id]: user2, [user3.id]: user3 },
     posts: { [post1.id]: post1, [post2.id]: post2, [post3.id]: post3, [post4.id]: post4},
     comments: { [comment1.id]: comment1, [comment2.id]: comment2, [comment3.id]:comment3 },
+    
 };
 
 function getObjectById(collection, id) {
@@ -296,6 +312,29 @@ function renderPosts(element){
     postContainer.appendChild(divPost);
 }
 
+function returnStories(){
+    let storiesOnFeed = [];
+    getObjectById('users', currentUser).following.forEach(userId => {
+        let followedUser = getObjectById('users', userId);
+        if (followedUser) {
+        if (followedUser.stories.length > 0){
+            storiesOnFeed.push(followedUser);
+        }
+        }
+    });
+    const storiesList = document.getElementById('stories-list');
+    storiesOnFeed.forEach(user => {
+        const content = 
+        `<div class="story">
+        <img class="profile-img" src="${user.profilePic}">
+        <span>${user.name}</span>
+        </div>`;
+
+        storiesList.insertAdjacentHTML('beforeend',content);
+    });
+
+}
+
 // Displays the comments 
 function displayComments(selectedPost){
 
@@ -379,8 +418,13 @@ Object.values(dataStore.posts).forEach(element => {
 const displayUser = document.getElementById('current-user');
 displayUser.innerHTML = getObjectById('users',currentUser).name;
 
+
+// Displays the current user on the left sidebar
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
 
 // Loads the first batch of posts
 returnPosts();
+
+//Loads stories
+returnStories();
