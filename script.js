@@ -224,6 +224,7 @@ function renderPosts(element){
     profileImage.setAttribute('src', getObjectById('users',element.ownerId).profilePic);
 
     const username = document.createElement('span');
+    username.setAttribute('style','cursor:pointer');
     username.innerHTML = getObjectById('users', element.ownerId).name;
 
     const postContent = document.createElement('img');
@@ -236,10 +237,10 @@ function renderPosts(element){
     const likesIcon = document.createElement('i');
     likesIcon.setAttribute('class','material-icons');
     if (element.likedBy.has(currentUser)){
-        likesIcon.setAttribute('style','color:red');
+        likesIcon.setAttribute('style','color:red;cursor:pointer;');
     }
     else{
-        likesIcon.setAttribute('style','color:white;');
+        likesIcon.setAttribute('style','color:white;cursor:pointer');
     }
     likesIcon.innerHTML = 'favorite';
 
@@ -251,19 +252,19 @@ function renderPosts(element){
         if (element.likedBy.has(currentUser)){
             element.likes--;
             likesCount.innerHTML = element.likes;
-            likesIcon.setAttribute('style','color:white;');
+            likesIcon.setAttribute('style','color:white;cursor:pointer;');
             element.likedBy.delete(currentUser);
         }else{
         element.likes++;
         likesCount.innerHTML = element.likes;
-        likesIcon.setAttribute('style','color:red;');
+        likesIcon.setAttribute('style','color:red;cursor:pointer;');
         element.likedBy.add(currentUser);
         }
     })
 
     const commentIcon = document.createElement('i');
     commentIcon.setAttribute('class','material-icons');
-    commentIcon.setAttribute('style','color:white;');
+    commentIcon.setAttribute('style','color:white;cursor:pointer');
     commentIcon.innerHTML = 'comment';
 
     commentIcon.addEventListener('click',() => {
@@ -303,7 +304,7 @@ function displayComments(selectedPost){
 
     const closeComments = document.createElement('i'); 
     closeComments.setAttribute('class','material-icons');
-    closeComments.setAttribute('style','color:white; width: fit-content;');
+    closeComments.setAttribute('style','color:white; width: fit-content;cursor:pointer;');
     closeComments.innerHTML = 'close';
 
     closeComments.addEventListener('click', () =>{
@@ -374,6 +375,12 @@ postContainer.addEventListener('scroll', onScroll);
 Object.values(dataStore.posts).forEach(element => {
     element.likedBy = new Set(element.likedBy);
 });
+
+const displayUser = document.getElementById('current-user');
+displayUser.innerHTML = getObjectById('users',currentUser).name;
+
+const displayUserPP = document.getElementById('current-user-pp');
+displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
 
 // Loads the first batch of posts
 returnPosts();
