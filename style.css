@@ -140,7 +140,6 @@ body {
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin-top: auto;
 }
 
@@ -227,4 +226,22 @@ body {
 .comment{
     padding-bottom: 15px;
     padding-left: 20px;
+}
+
+#stories-screen{
+    background-color: black;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    z-index: 1000;
+}
+
+#close-stories-screen{
+    padding:40px;
+    transform: scale(1.5);
+    color:white;
 }

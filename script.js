@@ -183,6 +183,7 @@ const dataStore = {
     users: { [user1.id]: user1, [user2.id]: user2, [user3.id]: user3 },
     posts: { [post1.id]: post1, [post2.id]: post2, [post3.id]: post3, [post4.id]: post4},
     comments: { [comment1.id]: comment1, [comment2.id]: comment2, [comment3.id]:comment3 },
+    stories: {[story1.id]:story1, [story2.id]:story2, [story3.id]:story3}
     
 };
 
@@ -324,15 +325,43 @@ function returnStories(){
     });
     const storiesList = document.getElementById('stories-list');
     storiesOnFeed.forEach(user => {
-        const content = 
-        `<div class="story">
-        <img class="profile-img" src="${user.profilePic}">
-        <span>${user.name}</span>
-        </div>`;
+        const story = document.createElement('div');
+        story.setAttribute('class','story');
+    
+        const img = document.createElement('img');
+        img.setAttribute('class','profile-img');
+        img.src = user.profilePic;
+        img.alt = user.name;
+    
+        const name = document.createElement('span');
+        name.textContent = user.name;
+    
+        story.appendChild(img);
+        story.appendChild(name);
+    
+        story.addEventListener('click', ()=>displayStories(user));
+    
+        storiesList.appendChild(story);
+    });
+    
+}
 
-        storiesList.insertAdjacentHTML('beforeend',content);
+function displayStories(selectedUser){
+    const storiesScreen = document.getElementById('stories-screen');
+    storiesScreen.style.display = 'flex';
+    let index = 0;
+    let currentStory = getObjectById('stories',selectedUser.stories[index]);
+
+    const currentStoryContent = document.createElement('img');
+    currentStoryContent.setAttribute('src',currentStory.content);
+
+    const closeStoriesScreen = document.getElementById('close-stories-screen')
+    closeStoriesScreen.addEventListener('click', () => {
+        storiesScreen.innerHTML = '';
+        storiesScreen.style.display = 'none';
     });
 
+    storiesScreen.appendChild(currentStoryContent);
 }
 
 // Displays the comments 
