@@ -339,30 +339,96 @@ function returnStories(){
         story.appendChild(img);
         story.appendChild(name);
     
-        story.addEventListener('click', ()=>displayStories(user));
+        story.addEventListener('click', ()=>displayStories(user,storiesOnFeed));
     
         storiesList.appendChild(story);
     });
     
 }
 
-function displayStories(selectedUser){
-    const storiesScreen = document.getElementById('stories-screen');
+function displayStories(selectedUser, storiesOnFeed) {
+    let storiesScreen = document.getElementById('stories-screen');
     storiesScreen.style.display = 'flex';
-    let index = 0;
-    let currentStory = getObjectById('stories',selectedUser.stories[index]);
+    
+    let userIndex = storiesOnFeed.findIndex(user => user.id === selectedUser.id); // Track user index
+    let storyIndex = 0; // Track story index within the user's stories
 
-    const currentStoryContent = document.createElement('img');
-    currentStoryContent.setAttribute('src',currentStory.content);
-
-    const closeStoriesScreen = document.getElementById('close-stories-screen')
-    closeStoriesScreen.addEventListener('click', () => {
+    // Function to render the current story
+    function renderStory() {
+        const currentUser = storiesOnFeed[userIndex];
+        const currentStory = getObjectById('stories', currentUser.stories[storyIndex]);
         storiesScreen.innerHTML = '';
-        storiesScreen.style.display = 'none';
-    });
 
-    storiesScreen.appendChild(currentStoryContent);
+        const contentDiv = document.createElement('div');
+        contentDiv.setAttribute('class', 'stories-content');
+
+        const profile = `
+            <div class="profile">
+                <img class="profile-img" src="${selectedUser.profilePic}">
+                <span>${selectedUser.name}</span>
+            </div>`;
+        
+        const closeStoriesScreen = document.createElement('i');
+        closeStoriesScreen.setAttribute('class', 'material-icons');
+        closeStoriesScreen.innerHTML = 'close';
+        closeStoriesScreen.setAttribute('id', 'close-stories-screen');
+
+        closeStoriesScreen.addEventListener('click', () => {
+            storiesScreen.innerHTML = '';
+            storiesScreen.style.display = 'none';
+        });
+
+        const currentStoryContent = document.createElement('img');
+        currentStoryContent.setAttribute('src', currentStory.content);
+
+        storiesScreen.appendChild(closeStoriesScreen);
+        closeStoriesScreen.insertAdjacentHTML('beforeend',profile)
+        contentDiv.appendChild(currentStoryContent);
+        storiesScreen.appendChild(contentDiv);
+    }
+
+    // Function to navigate to the next story or user
+    function nextStory() {
+        storyIndex++;
+        console.log(selectedUser.stories.length)
+        if (storyIndex >= selectedUser.stories.length) {
+            // Move to the next user
+            userIndex++;
+            selectedUser = storiesOnFeed[userIndex];
+            storyIndex = 0;
+            
+            if (userIndex >= storiesOnFeed.length) {
+               
+                // No more stories, close the stories screen
+                storiesScreen.innerHTML = '';
+                storiesScreen.style.display = 'none';
+
+                return;
+            }
+        }
+        renderStory();
+    }
+
+        // Remove existing event listeners to prevent duplicates
+        const newScreen = storiesScreen.cloneNode(true); // Clone the node to remove all listeners
+        storiesScreen.parentNode.replaceChild(newScreen, storiesScreen); // Replace the old node
+        storiesScreen = newScreen;
+    
+        // Render the first story
+        renderStory();
+    
+        // Add event listener for clicking to move to the next story
+        storiesScreen.addEventListener('click', () => {
+            const currentUser = storiesOnFeed[userIndex];
+            if (storyIndex < currentUser.stories.length - 1 || userIndex < storiesOnFeed.length - 1) {
+                nextStory();
+            } else {
+                storiesScreen.innerHTML = '';
+                storiesScreen.style.display = 'none';
+            }
+        });
 }
+
 
 // Displays the comments 
 function displayComments(selectedPost){
