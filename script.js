@@ -349,84 +349,97 @@ function returnStories(){
 function displayStories(selectedUser, storiesOnFeed) {
     let storiesScreen = document.getElementById('stories-screen');
     storiesScreen.style.display = 'flex';
-    
+
     let userIndex = storiesOnFeed.findIndex(user => user.id === selectedUser.id); // Track user index
     let storyIndex = 0; // Track story index within the user's stories
+    let progressBarTimeout = null;
+
+    // Function to close stories screen
+    function closeStories() {
+        storiesScreen.innerHTML = '';
+        storiesScreen.style.display = 'none';
+        if (progressBarTimeout) clearTimeout(progressBarTimeout);
+    }
 
     // Function to render the current story
     function renderStory() {
         const currentUser = storiesOnFeed[userIndex];
         const currentStory = getObjectById('stories', currentUser.stories[storyIndex]);
+        
         storiesScreen.innerHTML = '';
+
+        const progressBar = document.createElement('hr');
+        progressBar.setAttribute('id', 'progress-bar');
 
         const contentDiv = document.createElement('div');
         contentDiv.setAttribute('class', 'stories-content');
 
         const profile = `
             <div class="profile">
-                <img class="profile-img" src="${selectedUser.profilePic}">
-                <span>${selectedUser.name}</span>
+                <img class="profile-img" src="${currentUser.profilePic}">
+                <span>${currentUser.name}</span>
             </div>`;
         
         const closeStoriesScreen = document.createElement('i');
         closeStoriesScreen.setAttribute('class', 'material-icons');
         closeStoriesScreen.innerHTML = 'close';
         closeStoriesScreen.setAttribute('id', 'close-stories-screen');
-
-        closeStoriesScreen.addEventListener('click', () => {
-            storiesScreen.innerHTML = '';
-            storiesScreen.style.display = 'none';
-        });
+        closeStoriesScreen.addEventListener('click', closeStories);
 
         const currentStoryContent = document.createElement('img');
         currentStoryContent.setAttribute('src', currentStory.content);
 
+        storiesScreen.appendChild(progressBar);
+        storiesScreen.insertAdjacentHTML('afterbegin', profile);
         storiesScreen.appendChild(closeStoriesScreen);
-        closeStoriesScreen.insertAdjacentHTML('beforeend',profile)
         contentDiv.appendChild(currentStoryContent);
         storiesScreen.appendChild(contentDiv);
+
+        handleProgressBar(progressBar);
     }
 
     // Function to navigate to the next story or user
     function nextStory() {
         storyIndex++;
-        console.log(selectedUser.stories.length)
-        if (storyIndex >= selectedUser.stories.length) {
-            // Move to the next user
+        if (storyIndex >= storiesOnFeed[userIndex].stories.length) {
             userIndex++;
-            selectedUser = storiesOnFeed[userIndex];
             storyIndex = 0;
-            
             if (userIndex >= storiesOnFeed.length) {
-               
-                // No more stories, close the stories screen
-                storiesScreen.innerHTML = '';
-                storiesScreen.style.display = 'none';
-
+                closeStories();
                 return;
             }
         }
         renderStory();
     }
 
-        // Remove existing event listeners to prevent duplicates
-        const newScreen = storiesScreen.cloneNode(true); // Clone the node to remove all listeners
-        storiesScreen.parentNode.replaceChild(newScreen, storiesScreen); // Replace the old node
-        storiesScreen = newScreen;
-    
-        // Render the first story
-        renderStory();
-    
-        // Add event listener for clicking to move to the next story
-        storiesScreen.addEventListener('click', () => {
-            const currentUser = storiesOnFeed[userIndex];
-            if (storyIndex < currentUser.stories.length - 1 || userIndex < storiesOnFeed.length - 1) {
+    // Function to set a timeout bar to progress through stories
+    function handleProgressBar(progressBar) {
+        let timer = 0;
+        progressBar.style.width = '0%';
+
+        const step = 10; // Interval step in milliseconds
+        const duration = 7000; // Duration of story in milliseconds
+
+        progressBarTimeout = setInterval(() => {
+            timer += step;
+            progressBar.style.width = `${(timer / duration) * 100}%`;
+
+            if (timer >= duration) {
+                clearInterval(progressBarTimeout);
+                progressBarTimeout = null;
                 nextStory();
-            } else {
-                storiesScreen.innerHTML = '';
-                storiesScreen.style.display = 'none';
             }
-        });
+        }, step);
+    }
+
+    // Remove previous event listeners and add click-to-next-story functionality
+    storiesScreen.onclick = () => {
+        if (progressBarTimeout) clearInterval(progressBarTimeout);
+        nextStory();
+    };
+
+    // Render the first story
+    renderStory();
 }
 
 
