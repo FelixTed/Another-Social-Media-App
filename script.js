@@ -523,6 +523,7 @@ Object.values(dataStore.posts).forEach(element => {
     element.likedBy = new Set(element.likedBy);
 });
 
+// Displays the current username on the left sidebar
 const displayUser = document.getElementById('current-user');
 displayUser.innerHTML = getObjectById('users',currentUser).name;
 
@@ -530,6 +531,8 @@ displayUser.innerHTML = getObjectById('users',currentUser).name;
 // Displays the current user on the left sidebar
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
+
+//
 
 // Loads the first batch of posts
 returnPosts();

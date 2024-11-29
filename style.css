@@ -44,6 +44,9 @@ body {
     border:none;
     height: 5vh;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .sidebar-button:hover{
     background-color: rgba(160, 160, 160, 0.415);
@@ -255,5 +258,5 @@ body {
 }
 
 #progress-bar {
-    width: 95%;
+    width: 100%;
 }
