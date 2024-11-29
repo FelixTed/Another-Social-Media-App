@@ -1,0 +1,328 @@
+body {
+    user-select: none;
+    background-color: rgb(8, 0, 23);
+    color: white;
+    cursor: default;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.vertical-div{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.title-container {
+    font-family:'Sour Gummy',serif;
+    height: 100%;
+}
+
+.page{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+#sidebar {
+    height: 95vh;
+    background-color: rgb(2, 2, 65);
+    display: flex;
+    flex-direction: column;
+    padding:1vh;
+    justify-content: center;
+    top: 50%;
+    border-radius: 5px;
+    width: 20%;
+
+}
+.sidebar-button{
+    color: white;
+    margin-bottom:9vh;
+    background: none;
+    border:none;
+    height: 5vh;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar-button:hover{
+    background-color: rgba(160, 160, 160, 0.415);
+    cursor: pointer;
+}
+
+.sidebar-button:hover .button-content{
+    transform: scale(1.2);
+}
+.sidebar-button:active .button-content{
+    color: rgb(141, 140, 140);
+}
+.button-content {
+    padding-left: 10px;
+    float: left;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.side-buttons-div{
+    display: flex;
+    flex-direction: column;
+}
+.title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    font-family:'Sour Gummy',serif;
+    margin-bottom: 10vh;
+}
+
+.profile{
+    font-family:'Sour Gummy',serif;
+    margin-top: 20vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    cursor: pointer;
+}
+
+.profile-img {
+    width: 1cm;
+    height: 1cm;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 5%;
+}
+
+.profile-img:hover {
+    cursor: pointer;
+}
+
+.stories-container {
+    background-color: rgb(2, 2, 65);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10px;
+    padding: 10px;
+    height: 1.5cm;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#stories-list {
+    background-color: rgb(2, 2, 65);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10px;
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.story > span{
+  white-space: nowrap;      
+  overflow: hidden;         
+  text-overflow: ellipsis;  
+  min-width: 1.5cm; 
+  max-width: 1.5cm;          
+}
+#stories-list::-webkit-scrollbar {
+    display: none;
+}
+
+.story{
+    font-family: "Dancing Script", cursive;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+#post-container{
+    height: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    overflow:scroll;
+    
+}
+
+#post-container::-webkit-scrollbar {
+    display: none;
+}
+
+.post-content {
+    max-height: 50vh;
+    max-width: 50vw;
+}
+
+.post {
+    max-width: 75%;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center; /* Center entire content of the post */
+    text-align: center;  /* Center-align text */
+}
+
+.post-profile {
+    font-family: 'Sour Gummy', serif;
+    color: white;
+    display: inline-flex; /* Use inline-flex to avoid block-level stretching */
+    align-items: center; /* Vertically align image and text */
+    gap: 10px; /* Space between profile pic and username */
+    margin: 10px 0; /* Spacing above and below */
+    width: 100%;
+    justify-content: left;
+}
+.post-icons {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.post-caption {
+    font-family: 'Sour Gummy', serif;
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: left;
+}
+
+#comments-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 50%;
+    width: 25%;
+    width: 50%;
+    background:rgb(2, 2, 65);;
+    border: 2px solid #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+    flex-direction: column;
+    word-wrap: break-word;
+}
+
+#comments-box {
+    overflow-y: scroll;
+    height:1000px;
+}
+
+#comments-box::-webkit-scrollbar {
+    display: none;
+}
+
+.comment{
+    padding-bottom: 15px;
+    padding-left: 20px;
+}
+
+#stories-screen{
+    background-color: black;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    z-index: 1000;
+}
+
+#close-stories-screen{
+    padding:40px;
+    transform: scale(1.5);
+    color:white;
+    cursor: pointer;
+}
+.stories-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#progress-bar {
+    width: 100%;
+}
+
+.toggleCheckbox {
+    display: none;
+  }
+
+.toggleContainer {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: fit-content;
+    height: fit-content;
+    border: 3px solid #343434;
+    border-radius: 20px;
+    background: #343434;
+    font-weight: bold;
+    color: #343434;
+    cursor: pointer;
+ }
+
+ .toggleContainer::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0%;
+    border-radius:20px;
+    background: white;
+    transition: all 0.3s;
+ }
+ .toggleContainer div {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    z-index: 1;
+ }
+
+ .toggleCheckbox:checked + .toggleContainer::before {
+    left: 50%;
+ }
+
+ .toggleCheckbox:checked + .toggleContainer div:first-child{
+    color: white;
+    transition: color 0.3s;
+ }
+ .toggleCheckbox:checked + .toggleContainer div:last-child{
+    color: #343434;
+    transition: color 0.3s;
+ }
+ .toggleCheckbox + .toggleContainer div:first-child{
+    color: #343434;
+    transition: color 0.3s;
+ }
+ .toggleCheckbox + .toggleContainer div:last-child{
+    color: white;
+    transition: color 0.3s;
+ }
+
+ #create-content-div {
+    margin:20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+ }

@@ -532,8 +532,6 @@ displayUser.innerHTML = getObjectById('users',currentUser).name;
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
 
-//
-
 // Loads the first batch of posts
 returnPosts();
 
