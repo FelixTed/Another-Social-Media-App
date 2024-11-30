@@ -35,7 +35,6 @@ body {
     top: 50%;
     border-radius: 5px;
     width: 20%;
-
 }
 .sidebar-button{
     color: white;
@@ -111,6 +110,7 @@ body {
     height: 1.5cm;
     overflow-x: auto;
     overflow-y: hidden;
+    
 }
 
 #stories-list {
@@ -147,7 +147,7 @@ body {
 }
 
 #post-container{
-    height: 100%;
+    width: 100%;
     align-items: center;
     display: flex;
     flex-direction: column;

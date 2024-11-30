@@ -321,8 +321,28 @@ body {
 
  #create-content-div {
     margin:20px;
-    width: 100%;
+    width: 80%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+ }
+
+ #insert-content-div {
+    background-color: red;
+    font-family: 'Sour Gummy', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+ }
+ 
+ #insert-caption-div{
+    background-color: green;
+    font-family: 'Sour Gummy', serif;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
     align-items: center;
  }

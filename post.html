@@ -34,6 +34,19 @@
             <div>Story</div> 
             <div>Post</div>
         </label>
+        <div id="insert-content-div">
+            <form action="#" method="POST" enctype="multipart/form-data">
+                <label for="image">Choose an image to upload:</label>
+                <input type="file" id="image" name="image" accept="image/*" required><br><br>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+        <div id="insert-caption-div">
+            <form>
+                <label>Add caption</label>
+                <input type="text" id="caption" name="image" placeholder="caption">
+            </form>
+        </div>
     </div>
     <script src="createPosts.js"></script>
 </body>
