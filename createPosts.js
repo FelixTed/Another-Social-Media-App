@@ -190,6 +190,12 @@ function getObjectById(collection, id) {
 
 //You want to be logged in as a current user, this will be expanded upon later when API is done
 let currentUser = user3.id;
+let postType = 'story';
+
+// Add content to database
+function publishContent(){
+    console.log('publish');
+}
 
 // Displays the current username on the left sidebar
 const displayUser = document.getElementById('current-user');
@@ -198,3 +204,20 @@ displayUser.innerHTML = getObjectById('users',currentUser).name;
 //Displays the current user profile pic on the left sidebar
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
+
+//Controls the type of content to post depending on Story/Post Checkbox
+const contentTypeCheckBox = document.getElementById('toggle');
+const captionDiv = document.getElementById('insert-caption-div');
+contentTypeCheckBox.addEventListener('change', () => {
+    if(contentTypeCheckBox.checked){
+        postType = 'post';
+        captionDiv.style.display ='flex';
+    }else{
+        postType = 'story';
+        captionDiv.style.display = 'none';
+    }
+});
+
+// Publish content
+const publishButton = document.getElementById('publish-button');
+publishButton.addEventListener('click', () => publishContent())

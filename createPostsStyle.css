@@ -328,7 +328,6 @@ body {
  }
 
  #insert-content-div {
-    background-color: red;
     font-family: 'Sour Gummy', serif;
     display: flex;
     justify-content: center;
@@ -338,11 +337,38 @@ body {
  }
  
  #insert-caption-div{
-    background-color: green;
     font-family: 'Sour Gummy', serif;
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
  }
+
+ #publish-button{
+    color: white;
+    background: none;
+    border:none;
+    width: 20%;
+    height: 10%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#publish-button:hover{
+    background-color: rgba(160, 160, 160, 0.415);
+    cursor: pointer;
+}
+
+#publish-button:hover .button-content{
+    transform: scale(1.2);
+}
+#publish-button:active .button-content{
+    color: rgb(141, 140, 140);
+}
+.button-content {
+    padding-left: 10px;
+    float: left;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
