@@ -193,56 +193,31 @@ let currentUser = user3.id;
 let postType = 'story';
 
 // Add content to database THIS WILL BE EXPANDED UPON WHEN TIME DOING API WORK
-function publishContent(postType, currentUser, user3) {
-    const imageInput = document.getElementById('image');
-    const captionInput = document.getElementById('caption');
+function publishContent(){
+    const imageToAdd = document.getElementById('image');
     const currDate = new Date();
-
-    if (imageInput.files.length === 0) {
-        console.log("ERROR: No image selected");
-        return null;
+    if (postType === 'story'){
+        return {
+            id: generateId(),
+            ownerId: currentUser,
+            content: imageToAdd.files[0],
+            date: currDate.toString()
+        }
+    }else if (postType === 'post'){
+        const captionToAdd = document.getElementById('caption').value;
+        return {
+            id: generateId(),
+            ownerId: currentUser,
+            content: imageToAdd.files[0],
+            likes: 0,
+            comments: [],
+            caption: captionToAdd,
+            date: currDate.toString(),
+            likedBy: []
+        }
+    }else{
+        console.log('ERROR : Not a valid post type');
     }
-
-    const file = imageInput.files[0];
-    const fileReader = new FileReader();
-
-    // Use a Promise to handle the async FileReader operation
-    return new Promise((resolve, reject) => {
-        fileReader.onload = () => {
-            const contentUrl = fileReader.result; // Base64 Data URL
-
-            if (postType === 'story') {
-                resolve({
-                    id: generateId(),
-                    ownerId: currentUser.id,
-                    content: contentUrl,
-                    date: currDate.toISOString()
-                });
-            } else if (postType === 'post') {
-                const captionToAdd = captionInput ? captionInput.value : '';
-                resolve({
-                    id: generateId(),
-                    ownerId: currentUser.id,
-                    content: contentUrl,
-                    likes: 0,
-                    comments: [],
-                    caption: captionToAdd,
-                    date: currDate.toISOString(),
-                    likedBy: []
-                });
-            } else {
-                console.log('ERROR: Not a valid post type');
-                reject('Invalid post type');
-            }
-        };
-
-        fileReader.onerror = () => {
-            console.log("ERROR: Unable to read the file");
-            reject('File reading error');
-        };
-
-        fileReader.readAsDataURL(file); // Read the file as a Data URL
-    });
 }
 
 // Displays the current username on the left sidebar
