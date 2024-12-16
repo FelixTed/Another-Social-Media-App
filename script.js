@@ -1,6 +1,4 @@
-// Includes////////////////////////////////
 
-///////////////////////////////////////////
 
 function generateId() {
     return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
@@ -191,12 +189,25 @@ function getObjectById(collection, id) {
     return dataStore[collection][id] || null;
 }
 
+const BACKEND_URL = 'http://localhost:3000';
+
+
 //You want to be logged in as a current user, this will be expanded upon later when API is done
-let currentUser = user3.id;
+let currentUser = '675e188f70150e99e22ef4c6';
 const postContainer = document.getElementById('post-container');
 let loadedPosts = 0;
 let postsPerLoads = 10;
 
+async function getUserObjectById(userId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/user/${userId}`);
+        const data = await response.json();
+        console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching user:', err);
+    }
+}
 
 function returnPosts(){
    // Collect all posts from followed users
@@ -522,15 +533,19 @@ postContainer.addEventListener('scroll', onScroll);
 Object.values(dataStore.posts).forEach(element => {
     element.likedBy = new Set(element.likedBy);
 });
-
-// Displays the current username on the left sidebar
+async function displayCurrUser(id) {
+    // Displays the current username on the left sidebar
 const displayUser = document.getElementById('current-user');
-displayUser.innerHTML = getObjectById('users',currentUser).name;
+currUser = await getUserObjectById(currentUser)
+displayUser.innerHTML = currUser.name;
 
 
 // Displays the current user on the left sidebar
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
+}
+
+displayCurrUser(currentUser);
 
 // Loads the first batch of posts
 returnPosts();
