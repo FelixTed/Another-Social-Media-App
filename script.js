@@ -194,6 +194,7 @@ const BACKEND_URL = 'http://localhost:3000';
 
 //You want to be logged in as a current user, this will be expanded upon later when API is done
 let currentUser = '675e188f70150e99e22ef4c6';
+let userObj;
 const postContainer = document.getElementById('post-container');
 let loadedPosts = 0;
 let postsPerLoads = 10;
@@ -202,34 +203,48 @@ async function getUserObjectById(userId) {
     try {
         const response = await fetch(`${BACKEND_URL}/user/${userId}`);
         const data = await response.json();
-        console.log('User Object:', data);
+        //console.log('User Object:', data);
         return data;
     } catch (err) {
         console.error('Error fetching user:', err);
     }
 }
 
-function returnPosts(){
+async function getPostObjectById(postId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/post/${postId}`);
+        const data = await response.json();
+        //console.log('Post Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching post:', err);
+    }
+}
+
+
+
+async function returnPosts(){
    // Collect all posts from followed users
    let postsOnFeed = [];
-   getObjectById('users', currentUser).following.forEach(userId => {
-       const followedUser = getObjectById('users', userId);
+   
+    for(const userId of userObj.following){
+       const followedUser = await getUserObjectById(userId);
        if (followedUser) {
-           followedUser.postHistory.forEach(postId => {
-               const post = getObjectById('posts', postId);
+           for (postId of followedUser.postHistory){
+               const post = await getPostObjectById(postId);
                if (post) {
                    postsOnFeed.push(post);
                }
-           });
+           }
        }
-   });
+   }
     // Sort by descending order based on the date
     postsOnFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     // Get the next set of posts
     const newPosts = postsOnFeed.slice(loadedPosts, loadedPosts + postsPerLoads);
-    newPosts.forEach(renderPosts);
-
+    for(const post of newPosts){
+        renderPosts(post);
+    }
     // Update the count of loaded posts
     loadedPosts += newPosts.length;
 
@@ -240,7 +255,10 @@ function returnPosts(){
 
 }
 
-function renderPosts(element){
+async function renderPosts(element){
+    console.log(element)
+    ownerObject = await getUserObjectById(element.ownerId);
+
     const divPost = document.createElement('div');
     divPost.setAttribute('class','post');
 
@@ -249,22 +267,22 @@ function renderPosts(element){
 
     const profileImage = document.createElement('img');
     profileImage.setAttribute('class', 'profile-img');
-    profileImage.setAttribute('src', getObjectById('users',element.ownerId).profilePic);
+    profileImage.setAttribute('src', ownerObject.imageUrl);
 
     const username = document.createElement('span');
     username.setAttribute('style','cursor:pointer');
-    username.innerHTML = getObjectById('users', element.ownerId).name;
+    username.innerHTML = ownerObject.name;
 
     const postContent = document.createElement('img');
     postContent.setAttribute('class', 'post-content');
-    postContent.setAttribute('src', element.content);
+    postContent.setAttribute('src', element.imageUrl);
 
     const iconsDiv = document.createElement('div');
     iconsDiv.setAttribute('class', 'post-icons');
 
     const likesIcon = document.createElement('i');
     likesIcon.setAttribute('class','material-icons');
-    if (element.likedBy.has(currentUser)){
+    if (element.likedBy.includes(currentUser)){
         likesIcon.setAttribute('style','color:red;cursor:pointer;');
     }
     else{
@@ -277,7 +295,7 @@ function renderPosts(element){
     likesCount.innerHTML = element.likes;
     
     likesIcon.addEventListener('click', () => {
-        if (element.likedBy.has(currentUser)){
+        if (element.likedBy.includes(currentUser)){
             element.likes--;
             likesCount.innerHTML = element.likes;
             likesIcon.setAttribute('style','color:white;cursor:pointer;');
@@ -326,7 +344,7 @@ function renderPosts(element){
 
 function returnStories(){
     let storiesOnFeed = [];
-    getObjectById('users', currentUser).following.forEach(userId => {
+    userObj.following.forEach(userId => {
         let followedUser = getObjectById('users', userId);
         if (followedUser) {
         if (followedUser.stories.length > 0){
@@ -534,21 +552,27 @@ Object.values(dataStore.posts).forEach(element => {
     element.likedBy = new Set(element.likedBy);
 });
 async function displayCurrUser(id) {
-    // Displays the current username on the left sidebar
-const displayUser = document.getElementById('current-user');
-currUser = await getUserObjectById(currentUser)
-displayUser.innerHTML = currUser.name;
+        // Displays the current username on the left sidebar
+    const displayUser = document.getElementById('current-user');
+    userObj = await getUserObjectById(currentUser)
+    displayUser.innerHTML = userObj.name;
 
 
-// Displays the current user on the left sidebar
-const displayUserPP = document.getElementById('current-user-pp');
-displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
+    // Displays the current user on the left sidebar
+    const displayUserPP = document.getElementById('current-user-pp');
+    displayUserPP.setAttribute('src',userObj.imageUrl);
+
+    setupPage();
+
 }
 
+// Displays the current user on the bottom left + store it in a variable
 displayCurrUser(currentUser);
 
-// Loads the first batch of posts
-returnPosts();
+function setupPage(){
+    // Loads the first batch of posts
+    returnPosts();
 
-//Loads stories
-returnStories();
+    //Loads stories
+    returnStories();
+}
