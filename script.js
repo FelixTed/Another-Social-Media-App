@@ -221,7 +221,37 @@ async function getPostObjectById(postId) {
     }
 }
 
+async function getCommentObjectById(commentId){
+    try {
+        const response = await fetch(`${BACKEND_URL}/comment/${commentId}`);
+        const data = await response.json();
+        //console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching comment:', err);
+    }
+}
 
+async function updatePost(postId, value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/post/${postId}`, {
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to update");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error updating ressource: ', err);
+    }
+}
 
 async function returnPosts(){
    // Collect all posts from followed users
@@ -292,19 +322,29 @@ async function renderPosts(element){
 
     
     const likesCount = document.createElement('span');
-    likesCount.innerHTML = element.likes;
+    let likes = element.likedBy.length;
+    likesCount.innerHTML = likes;
     
-    likesIcon.addEventListener('click', () => {
-        if (element.likedBy.includes(currentUser)){
-            element.likes--;
-            likesCount.innerHTML = element.likes;
-            likesIcon.setAttribute('style','color:white;cursor:pointer;');
-            element.likedBy.delete(currentUser);
-        }else{
-        element.likes++;
-        likesCount.innerHTML = element.likes;
-        likesIcon.setAttribute('style','color:red;cursor:pointer;');
-        element.likedBy.add(currentUser);
+
+    let isProcessing = false;
+    likesIcon.addEventListener('click', async () => {
+        if (isProcessing) return;
+        try{
+            isProcessing = true;
+            element = await updatePost(element._id,{likedBy:currentUser});
+
+            if (element.likedBy.includes(currentUser)){
+                likesIcon.setAttribute('style','color:red;cursor:pointer;');
+                console.log(element.likedBy)
+            }else{
+                likesIcon.setAttribute('style','color:white;cursor:pointer;');
+            }
+
+            likesCount.innerHTML = element.likedBy.length;
+        }catch(err){
+            console.log('Error updating like status: '+ err);
+        }finally{
+            isProcessing = false;
         }
     })
 
@@ -473,7 +513,7 @@ function displayStories(selectedUser, storiesOnFeed) {
 
 
 // Displays the comments 
-function displayComments(selectedPost){
+async function displayComments(selectedPost){
 
     const commentsContainer = document.getElementById('comments-container');
     commentsContainer.style.display = 'flex';
@@ -494,14 +534,15 @@ function displayComments(selectedPost){
     commentsContainer.appendChild(closeComments);
     commentsContainer.appendChild(commentsBox);
     
-    selectedPost.comments.forEach((commentId) => {
-        const comment = getObjectById('comments',commentId);
+    for (commentId of selectedPost.comments){
+        const comment = await getCommentObjectById(commentId);
+        const commentOwner = await getUserObjectById(comment.ownerId);
 
         const content = 
         `<div class = 'comment'>
                 <div class="profile">
-                    <img class="profile-img" src=${getObjectById('users',comment.ownerId).profilePic}>
-                    <span>${getObjectById('users',comment.ownerId).name}</span>
+                    <img class="profile-img" src=${commentOwner.profilePic}>
+                    <span>${commentOwner.name}</span>
                 </div>
                 <span>${comment.content}</span>
             </div>
@@ -509,7 +550,7 @@ function displayComments(selectedPost){
 
         commentsBox.insertAdjacentHTML('beforeend',content);
 
-    });
+    }
     
     const commentInput = document.createElement('input');
     commentInput.setAttribute('placeholder','Enter comment...');
