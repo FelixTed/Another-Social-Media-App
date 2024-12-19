@@ -232,6 +232,27 @@ async function getCommentObjectById(commentId){
     }
 }
 
+async function postComment(value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/comment/`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to post");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error posting ressource: ', err);
+    }
+}
+
 async function updatePost(postId, value){
     try{
         const response = await fetch(`${BACKEND_URL}/post/${postId}`, {
@@ -286,7 +307,6 @@ async function returnPosts(){
 }
 
 async function renderPosts(element){
-    console.log(element)
     ownerObject = await getUserObjectById(element.ownerId);
 
     const divPost = document.createElement('div');
@@ -353,7 +373,8 @@ async function renderPosts(element){
     commentIcon.setAttribute('style','color:white;cursor:pointer');
     commentIcon.innerHTML = 'comment';
 
-    commentIcon.addEventListener('click',() => {
+    commentIcon.addEventListener('click',async () => {
+        element = await getPostObjectById(element._id);
         displayComments(element)
     })
 
@@ -541,7 +562,7 @@ async function displayComments(selectedPost){
         const content = 
         `<div class = 'comment'>
                 <div class="profile">
-                    <img class="profile-img" src=${commentOwner.profilePic}>
+                    <img class="profile-img" src=${commentOwner.imageUrl}>
                     <span>${commentOwner.name}</span>
                 </div>
                 <span>${comment.content}</span>
@@ -556,17 +577,16 @@ async function displayComments(selectedPost){
     commentInput.setAttribute('placeholder','Enter comment...');
 
     // Add comment when enter is pressed
-    commentInput.addEventListener('keydown',(event) =>{
+    commentInput.addEventListener('keydown',async (event) =>{
         if (event.key === "Enter") {
             const newComment = {
-                id: generateId(),
                 ownerId: currentUser,
-                postId: selectedPost.id,
+                postId: selectedPost._id,
                 content: event.target.value
             }
 
-            dataStore['comments'][newComment.id] = newComment;
-            selectedPost.comments.push(newComment.id);
+            let commentToAdd = await postComment(newComment);
+            selectedPost =  await updatePost(selectedPost._id,{comments:commentToAdd._id});
             commentsContainer.innerHTML = '';
             document.getElementById(selectedPost.id).innerHTML = selectedPost.comments.length;
             displayComments(selectedPost);
