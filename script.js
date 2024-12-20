@@ -1,6 +1,4 @@
-// Includes////////////////////////////////
 
-///////////////////////////////////////////
 
 function generateId() {
     return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
@@ -191,34 +189,113 @@ function getObjectById(collection, id) {
     return dataStore[collection][id] || null;
 }
 
+const BACKEND_URL = 'http://localhost:3000';
+
+
 //You want to be logged in as a current user, this will be expanded upon later when API is done
-let currentUser = user3.id;
+let currentUser = '675e188f70150e99e22ef4c6';
+let userObj;
 const postContainer = document.getElementById('post-container');
 let loadedPosts = 0;
 let postsPerLoads = 10;
 
+async function getUserObjectById(userId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/user/${userId}`);
+        const data = await response.json();
+        //console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching user:', err);
+    }
+}
 
-function returnPosts(){
+async function getPostObjectById(postId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/post/${postId}`);
+        const data = await response.json();
+        //console.log('Post Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching post:', err);
+    }
+}
+
+async function getCommentObjectById(commentId){
+    try {
+        const response = await fetch(`${BACKEND_URL}/comment/${commentId}`);
+        const data = await response.json();
+        //console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching comment:', err);
+    }
+}
+
+async function postComment(value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/comment/`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to post");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error posting ressource: ', err);
+    }
+}
+
+async function updatePost(postId, value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/post/${postId}`, {
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to update");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error updating ressource: ', err);
+    }
+}
+
+async function returnPosts(){
    // Collect all posts from followed users
    let postsOnFeed = [];
-   getObjectById('users', currentUser).following.forEach(userId => {
-       const followedUser = getObjectById('users', userId);
+   
+    for(const userId of userObj.following){
+       const followedUser = await getUserObjectById(userId);
        if (followedUser) {
-           followedUser.postHistory.forEach(postId => {
-               const post = getObjectById('posts', postId);
+           for (postId of followedUser.postHistory){
+               const post = await getPostObjectById(postId);
                if (post) {
                    postsOnFeed.push(post);
                }
-           });
+           }
        }
-   });
+   }
     // Sort by descending order based on the date
     postsOnFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     // Get the next set of posts
     const newPosts = postsOnFeed.slice(loadedPosts, loadedPosts + postsPerLoads);
-    newPosts.forEach(renderPosts);
-
+    for(const post of newPosts){
+        renderPosts(post);
+    }
     // Update the count of loaded posts
     loadedPosts += newPosts.length;
 
@@ -229,7 +306,9 @@ function returnPosts(){
 
 }
 
-function renderPosts(element){
+async function renderPosts(element){
+    ownerObject = await getUserObjectById(element.ownerId);
+
     const divPost = document.createElement('div');
     divPost.setAttribute('class','post');
 
@@ -238,22 +317,22 @@ function renderPosts(element){
 
     const profileImage = document.createElement('img');
     profileImage.setAttribute('class', 'profile-img');
-    profileImage.setAttribute('src', getObjectById('users',element.ownerId).profilePic);
+    profileImage.setAttribute('src', ownerObject.imageUrl);
 
     const username = document.createElement('span');
     username.setAttribute('style','cursor:pointer');
-    username.innerHTML = getObjectById('users', element.ownerId).name;
+    username.innerHTML = ownerObject.name;
 
     const postContent = document.createElement('img');
     postContent.setAttribute('class', 'post-content');
-    postContent.setAttribute('src', element.content);
+    postContent.setAttribute('src', element.imageUrl);
 
     const iconsDiv = document.createElement('div');
     iconsDiv.setAttribute('class', 'post-icons');
 
     const likesIcon = document.createElement('i');
     likesIcon.setAttribute('class','material-icons');
-    if (element.likedBy.has(currentUser)){
+    if (element.likedBy.includes(currentUser)){
         likesIcon.setAttribute('style','color:red;cursor:pointer;');
     }
     else{
@@ -263,19 +342,29 @@ function renderPosts(element){
 
     
     const likesCount = document.createElement('span');
-    likesCount.innerHTML = element.likes;
+    let likes = element.likedBy.length;
+    likesCount.innerHTML = likes;
     
-    likesIcon.addEventListener('click', () => {
-        if (element.likedBy.has(currentUser)){
-            element.likes--;
-            likesCount.innerHTML = element.likes;
-            likesIcon.setAttribute('style','color:white;cursor:pointer;');
-            element.likedBy.delete(currentUser);
-        }else{
-        element.likes++;
-        likesCount.innerHTML = element.likes;
-        likesIcon.setAttribute('style','color:red;cursor:pointer;');
-        element.likedBy.add(currentUser);
+
+    let isProcessing = false;
+    likesIcon.addEventListener('click', async () => {
+        if (isProcessing) return;
+        try{
+            isProcessing = true;
+            element = await updatePost(element._id,{likedBy:currentUser});
+
+            if (element.likedBy.includes(currentUser)){
+                likesIcon.setAttribute('style','color:red;cursor:pointer;');
+                console.log(element.likedBy)
+            }else{
+                likesIcon.setAttribute('style','color:white;cursor:pointer;');
+            }
+
+            likesCount.innerHTML = element.likedBy.length;
+        }catch(err){
+            console.log('Error updating like status: '+ err);
+        }finally{
+            isProcessing = false;
         }
     })
 
@@ -284,7 +373,8 @@ function renderPosts(element){
     commentIcon.setAttribute('style','color:white;cursor:pointer');
     commentIcon.innerHTML = 'comment';
 
-    commentIcon.addEventListener('click',() => {
+    commentIcon.addEventListener('click',async () => {
+        element = await getPostObjectById(element._id);
         displayComments(element)
     })
 
@@ -315,7 +405,7 @@ function renderPosts(element){
 
 function returnStories(){
     let storiesOnFeed = [];
-    getObjectById('users', currentUser).following.forEach(userId => {
+    userObj.following.forEach(userId => {
         let followedUser = getObjectById('users', userId);
         if (followedUser) {
         if (followedUser.stories.length > 0){
@@ -444,7 +534,7 @@ function displayStories(selectedUser, storiesOnFeed) {
 
 
 // Displays the comments 
-function displayComments(selectedPost){
+async function displayComments(selectedPost){
 
     const commentsContainer = document.getElementById('comments-container');
     commentsContainer.style.display = 'flex';
@@ -465,14 +555,15 @@ function displayComments(selectedPost){
     commentsContainer.appendChild(closeComments);
     commentsContainer.appendChild(commentsBox);
     
-    selectedPost.comments.forEach((commentId) => {
-        const comment = getObjectById('comments',commentId);
+    for (commentId of selectedPost.comments){
+        const comment = await getCommentObjectById(commentId);
+        const commentOwner = await getUserObjectById(comment.ownerId);
 
         const content = 
         `<div class = 'comment'>
                 <div class="profile">
-                    <img class="profile-img" src=${getObjectById('users',comment.ownerId).profilePic}>
-                    <span>${getObjectById('users',comment.ownerId).name}</span>
+                    <img class="profile-img" src=${commentOwner.imageUrl}>
+                    <span>${commentOwner.name}</span>
                 </div>
                 <span>${comment.content}</span>
             </div>
@@ -480,23 +571,22 @@ function displayComments(selectedPost){
 
         commentsBox.insertAdjacentHTML('beforeend',content);
 
-    });
+    }
     
     const commentInput = document.createElement('input');
     commentInput.setAttribute('placeholder','Enter comment...');
 
     // Add comment when enter is pressed
-    commentInput.addEventListener('keydown',(event) =>{
+    commentInput.addEventListener('keydown',async (event) =>{
         if (event.key === "Enter") {
             const newComment = {
-                id: generateId(),
                 ownerId: currentUser,
-                postId: selectedPost.id,
+                postId: selectedPost._id,
                 content: event.target.value
             }
 
-            dataStore['comments'][newComment.id] = newComment;
-            selectedPost.comments.push(newComment.id);
+            let commentToAdd = await postComment(newComment);
+            selectedPost =  await updatePost(selectedPost._id,{comments:commentToAdd._id});
             commentsContainer.innerHTML = '';
             document.getElementById(selectedPost.id).innerHTML = selectedPost.comments.length;
             displayComments(selectedPost);
@@ -522,18 +612,28 @@ postContainer.addEventListener('scroll', onScroll);
 Object.values(dataStore.posts).forEach(element => {
     element.likedBy = new Set(element.likedBy);
 });
+async function displayCurrUser(id) {
+        // Displays the current username on the left sidebar
+    const displayUser = document.getElementById('current-user');
+    userObj = await getUserObjectById(currentUser)
+    displayUser.innerHTML = userObj.name;
 
-// Displays the current username on the left sidebar
-const displayUser = document.getElementById('current-user');
-displayUser.innerHTML = getObjectById('users',currentUser).name;
 
+    // Displays the current user on the left sidebar
+    const displayUserPP = document.getElementById('current-user-pp');
+    displayUserPP.setAttribute('src',userObj.imageUrl);
 
-// Displays the current user on the left sidebar
-const displayUserPP = document.getElementById('current-user-pp');
-displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
+    setupPage();
 
-// Loads the first batch of posts
-returnPosts();
+}
 
-//Loads stories
-returnStories();
+// Displays the current user on the bottom left + store it in a variable
+displayCurrUser(currentUser);
+
+function setupPage(){
+    // Loads the first batch of posts
+    returnPosts();
+
+    //Loads stories
+    returnStories();
+}
