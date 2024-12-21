@@ -210,6 +210,17 @@ async function getUserObjectById(userId) {
     }
 }
 
+async function getStoryObjectById(storyId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/story/${storyId}`);
+        const data = await response.json();
+        //console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching story:', err);
+    }
+}
+
 async function getPostObjectById(postId) {
     try {
         const response = await fetch(`${BACKEND_URL}/post/${postId}`);
@@ -403,45 +414,49 @@ async function renderPosts(element){
     postContainer.appendChild(divPost);
 }
 
-function returnStories(){
+async function returnStories() {
     let storiesOnFeed = [];
-    userObj.following.forEach(userId => {
-        let followedUser = getObjectById('users', userId);
-        if (followedUser) {
-        if (followedUser.stories.length > 0){
+
+    for (userId of userObj.following) {
+        let followedUser = await getUserObjectById(userId);
+        if (followedUser && followedUser.stories.length > 0) {
             storiesOnFeed.push(followedUser);
         }
-        }
-    });
+    }
+    
     const storiesList = document.getElementById('stories-list');
-    storiesOnFeed.forEach(user => {
+    
+    // Using forEach instead of for...of to avoid closure issues
+    storiesOnFeed.forEach(currentUser => {
         const story = document.createElement('div');
-        story.setAttribute('class','story');
+        story.setAttribute('class', 'story');
     
         const img = document.createElement('img');
-        img.setAttribute('class','profile-img');
-        img.src = user.profilePic;
-        img.alt = user.name;
+        img.setAttribute('class', 'profile-img');
+        img.src = currentUser.imageUrl;
+        img.alt = currentUser.name;
     
         const name = document.createElement('span');
-        name.textContent = user.name;
+        name.textContent = currentUser.name;
     
         story.appendChild(img);
         story.appendChild(name);
     
-        story.addEventListener('click', ()=>displayStories(user,storiesOnFeed));
+        // Create a new scope for the event listener with the current user
+        story.addEventListener('click', () => displayStories(currentUser, storiesOnFeed));
     
         storiesList.appendChild(story);
     });
-    
 }
 
-function displayStories(selectedUser, storiesOnFeed) {
+async function displayStories(selectedUser, storiesOnFeed) {
     let storiesScreen = document.getElementById('stories-screen');
     storiesScreen.style.display = 'flex';
-
-    let userIndex = storiesOnFeed.findIndex(user => user.id === selectedUser.id); // Track user index
-    let storyIndex = 0; // Track story index within the user's stories
+    console.log(storiesOnFeed)
+    console.log(selectedUser)
+    let userIndex = storiesOnFeed.findIndex(user => user._id === selectedUser._id);
+    console.log(userIndex)
+    let storyIndex = 0; 
     let progressBarTimeout = null;
 
     // Function to close stories screen
@@ -452,9 +467,9 @@ function displayStories(selectedUser, storiesOnFeed) {
     }
 
     // Function to render the current story
-    function renderStory() {
+    async function renderStory() {
         const currentUser = storiesOnFeed[userIndex];
-        const currentStory = getObjectById('stories', currentUser.stories[storyIndex]);
+        const currentStory = await getStoryObjectById(currentUser.stories[storyIndex]);
         
         storiesScreen.innerHTML = '';
 
@@ -466,7 +481,7 @@ function displayStories(selectedUser, storiesOnFeed) {
 
         const profile = `
             <div class="profile">
-                <img class="profile-img" src="${currentUser.profilePic}">
+                <img class="profile-img" src="${currentUser.imageUrl}">
                 <span>${currentUser.name}</span>
             </div>`;
         
@@ -477,8 +492,9 @@ function displayStories(selectedUser, storiesOnFeed) {
         closeStoriesScreen.addEventListener('click', closeStories);
 
         const currentStoryContent = document.createElement('img');
-        currentStoryContent.setAttribute('src', currentStory.content);
-
+        currentStoryContent.setAttribute('src', currentStory.imageUrl);
+        currentStoryContent.setAttribute('class', 'story-image');        
+        
         storiesScreen.appendChild(progressBar);
         storiesScreen.insertAdjacentHTML('afterbegin', profile);
         storiesScreen.appendChild(closeStoriesScreen);
@@ -615,7 +631,7 @@ Object.values(dataStore.posts).forEach(element => {
 async function displayCurrUser(id) {
         // Displays the current username on the left sidebar
     const displayUser = document.getElementById('current-user');
-    userObj = await getUserObjectById(currentUser)
+    userObj = await getUserObjectById(currentUser);
     displayUser.innerHTML = userObj.name;
 
 

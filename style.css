@@ -257,6 +257,11 @@ body {
     height: 100%;
 }
 
+.story-image{
+    max-width: 75%;
+    max-height: 75%;
+}
+
 #progress-bar {
     width: 100%;
 }
