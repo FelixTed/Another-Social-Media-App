@@ -1,4 +1,4 @@
-
+import { jwtDecode } from "https://esm.run/jwt-decode";
 
 function generateId() {
     return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
@@ -193,7 +193,20 @@ const BACKEND_URL = 'http://localhost:3000';
 
 
 //You want to be logged in as a current user, this will be expanded upon later when API is done
-let currentUser = '675e188f70150e99e22ef4c6';
+let currentUser;
+const token = localStorage.getItem('token');
+if (!token) {
+    // Redirect to login if no token
+    window.location.href = 'login.html';
+} else {
+    // If using jwt-decode library:
+    const decoded = jwtDecode(token);
+    currentUser= decoded.id;
+    
+
+    // Now you can use the userId
+    console.log('Current user ID:', currentUser);
+}
 let userObj;
 const postContainer = document.getElementById('post-container');
 let loadedPosts = 0;
@@ -292,7 +305,7 @@ async function returnPosts(){
     for(const userId of userObj.following){
        const followedUser = await getUserObjectById(userId);
        if (followedUser) {
-           for (postId of followedUser.postHistory){
+           for (const postId of followedUser.postHistory){
                const post = await getPostObjectById(postId);
                if (post) {
                    postsOnFeed.push(post);
@@ -318,7 +331,7 @@ async function returnPosts(){
 }
 
 async function renderPosts(element){
-    ownerObject = await getUserObjectById(element.ownerId);
+    const ownerObject = await getUserObjectById(element.ownerId);
 
     const divPost = document.createElement('div');
     divPost.setAttribute('class','post');
@@ -417,7 +430,7 @@ async function renderPosts(element){
 async function returnStories() {
     let storiesOnFeed = [];
 
-    for (userId of userObj.following) {
+    for (const userId of userObj.following) {
         let followedUser = await getUserObjectById(userId);
         if (followedUser && followedUser.stories.length > 0) {
             storiesOnFeed.push(followedUser);
@@ -632,6 +645,7 @@ async function displayCurrUser(id) {
         // Displays the current username on the left sidebar
     const displayUser = document.getElementById('current-user');
     userObj = await getUserObjectById(currentUser);
+    console.log(userObj)
     displayUser.innerHTML = userObj.name;
 
 
