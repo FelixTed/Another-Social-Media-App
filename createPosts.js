@@ -189,23 +189,79 @@ function getObjectById(collection, id) {
 }
 
 //You want to be logged in as a current user, this will be expanded upon later when API is done
-let currentUser = user3.id;
-let postType = 'story';
+let currentUser = '675e188f70150e99e22ef4c6';
+let userObj;
+let postType = 'post';
+const BACKEND_URL = 'http://localhost:3000';
+
+async function getUserObjectById(userId) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/user/${userId}`);
+        const data = await response.json();
+        //console.log('User Object:', data);
+        return data;
+    } catch (err) {
+        console.error('Error fetching user:', err);
+    }
+}
+
+async function postPost(value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/post/`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to post");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error posting ressource: ', err);
+    }
+}
+
+async function postStory(value){
+    try{
+        const response = await fetch(`${BACKEND_URL}/story/`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify(value)
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to post");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error posting ressource: ', err);
+    }
+}
 
 // Add content to database THIS WILL BE EXPANDED UPON WHEN TIME DOING API WORK
-function publishContent(){
+async function publishContent(){
     const imageToAdd = document.getElementById('image');
     const currDate = new Date();
     if (postType === 'story'){
-        return {
+        const content = {
             id: generateId(),
             ownerId: currentUser,
             content: imageToAdd.files[0],
             date: currDate.toString()
         }
+        await postStory(content);
     }else if (postType === 'post'){
         const captionToAdd = document.getElementById('caption').value;
-        return {
+        const content = {
             id: generateId(),
             ownerId: currentUser,
             content: imageToAdd.files[0],
@@ -215,32 +271,47 @@ function publishContent(){
             date: currDate.toString(),
             likedBy: []
         }
+        await postStory(content);
     }else{
         console.log('ERROR : Not a valid post type');
     }
 }
 
-// Displays the current username on the left sidebar
-const displayUser = document.getElementById('current-user');
-displayUser.innerHTML = getObjectById('users',currentUser).name;
-
-//Displays the current user profile pic on the left sidebar
-const displayUserPP = document.getElementById('current-user-pp');
-displayUserPP.setAttribute('src',getObjectById('users',currentUser).profilePic);
 
 //Controls the type of content to post depending on Story/Post Checkbox
 const contentTypeCheckBox = document.getElementById('toggle');
 const captionDiv = document.getElementById('insert-caption-div');
 contentTypeCheckBox.addEventListener('change', () => {
     if(contentTypeCheckBox.checked){
-        postType = 'post';
+        postType = 'story';
         captionDiv.style.display ='flex';
     }else{
-        postType = 'story';
+        postType = 'post';
         captionDiv.style.display = 'none';
     }
 });
 
-// Publish content
-const publishButton = document.getElementById('publish-button');
-publishButton.addEventListener('click', () => {console.log(publishContent())});
+async function displayCurrUser(id) {
+        // Displays the current username on the left sidebar
+    const displayUser = document.getElementById('current-user');
+    userObj = await getUserObjectById(id);
+    displayUser.innerHTML = userObj.name;
+
+
+    // Displays the current user on the left sidebar
+    const displayUserPP = document.getElementById('current-user-pp');
+    displayUserPP.setAttribute('src',userObj.imageUrl);
+
+    setupPage();
+
+}
+
+// Displays the current user on the bottom left + store it in a variable
+displayCurrUser(currentUser);
+
+function setupPage(){
+    // Publish content
+    const publishButton = document.getElementById('publish-button');
+    publishButton.addEventListener('click', () => {console.log(publishContent())});
+}
+
