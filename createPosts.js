@@ -191,7 +191,7 @@ function getObjectById(collection, id) {
 //You want to be logged in as a current user, this will be expanded upon later when API is done
 let currentUser = '675e188f70150e99e22ef4c6';
 let userObj;
-let postType = 'post';
+let postType = 'story';
 const BACKEND_URL = 'http://localhost:3000';
 
 async function getUserObjectById(userId) {
@@ -205,35 +205,29 @@ async function getUserObjectById(userId) {
     }
 }
 
-async function postPost(value){
-    try{
+async function postPost(formData) {
+    try {
         const response = await fetch(`${BACKEND_URL}/post/`, {
-            method:'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify(value)
+            method: 'POST',
+            body: formData
         });
 
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error("Failed to post");
         }
 
         const data = await response.json();
         return data;
-    }catch(err){
-        console.error('Error posting ressource: ', err);
+    } catch(err) {
+        console.error('Error posting resource: ', err);
     }
 }
 
-async function postStory(value){
+async function postStory(formData){
     try{
         const response = await fetch(`${BACKEND_URL}/story/`, {
             method:'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify(value)
+            body:formData
         });
 
         if(!response.ok){
@@ -248,32 +242,31 @@ async function postStory(value){
 }
 
 // Add content to database THIS WILL BE EXPANDED UPON WHEN TIME DOING API WORK
-async function publishContent(){
+async function publishContent() {
     const imageToAdd = document.getElementById('image');
     const currDate = new Date();
-    if (postType === 'story'){
-        const content = {
-            id: generateId(),
-            ownerId: currentUser,
-            content: imageToAdd.files[0],
-            date: currDate.toString()
-        }
-        await postStory(content);
-    }else if (postType === 'post'){
+    
+    if (!imageToAdd.files[0]) {
+        console.error('No file selected');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('content', imageToAdd.files[0]);
+    
+    if (postType === 'story') {
+        formData.append('ownerId', currentUser);
+        formData.append('date', currDate.toString());
+        await postStory(formData);
+    } else if (postType === 'post') {
         const captionToAdd = document.getElementById('caption').value;
-        const content = {
-            id: generateId(),
-            ownerId: currentUser,
-            content: imageToAdd.files[0],
-            likes: 0,
-            comments: [],
-            caption: captionToAdd,
-            date: currDate.toString(),
-            likedBy: []
-        }
-        await postStory(content);
-    }else{
-        console.log('ERROR : Not a valid post type');
+        formData.append('ownerId', currentUser);
+        formData.append('caption', captionToAdd);
+        formData.append('likes', '0');
+        formData.append('comments', '[]');
+        formData.append('likedBy', '[]');
+        formData.append('date', currDate.toString());
+        await postPost(formData);
     }
 }
 
@@ -283,10 +276,10 @@ const contentTypeCheckBox = document.getElementById('toggle');
 const captionDiv = document.getElementById('insert-caption-div');
 contentTypeCheckBox.addEventListener('change', () => {
     if(contentTypeCheckBox.checked){
-        postType = 'story';
+        postType = 'post';
         captionDiv.style.display ='flex';
     }else{
-        postType = 'post';
+        postType = 'story';
         captionDiv.style.display = 'none';
     }
 });
