@@ -7,14 +7,16 @@ async function postUser(formData) {
             body: formData
         });
 
+        const data = await response.json(); // Parse JSON even on failure
+
         if (!response.ok) {
-            throw new Error("Failed to post");
+            throw new Error(data.message || 'Failed to post');
         }
 
-        const data = await response.json();
         return data;
-    } catch(err) {
-        console.error('Error posting resource: ', err);
+    } catch (err) {
+        console.error('Error posting resource:', err);
+        throw err; // Re-throw the error so it can be caught in the caller
     }
 }
 
@@ -60,11 +62,16 @@ document.getElementById('create-account-button').addEventListener('click', async
         formData.append('chats','[]');
         formData.append('password',password);
         const response = await postUser(formData);
-
-        console.log('New account created:', response.token);
-        localStorage.setItem('token', response.token);
-        window.location.href = 'index.html';
+        if (response.token) {
+            console.log('New account created:', response.token);
+            localStorage.setItem('token', response.token);
+            window.location.href = 'index.html';
+        } else {
+            console.error('Account creation failed:', response.message);
+            alert(response.message); // Show the error message to the user
+        } 
     }catch(error){
-        console.error('Error: ', error);
+        console.error('An unexpected error occurred:', error.message);
+        alert(error.message);
     }
 })
