@@ -11,15 +11,33 @@
 </html>
 
 <body>
+    <div id="sidebar">
+        <div class="title">
+            <i class="material-icons" style="color: white;">handshake</i>
+            <h3 style="color: white;">Another Social Media App</h3>
+        </div>
+            <div class="side-buttons-div">
+                <a href="./index.html" class="sidebar-button"><span class="button-content">Home</span></a>
+                <a href="./search.html" class="sidebar-button"><span class="button-content">Search</span></a>
+                <a href="./post.html" class="sidebar-button"><span class="button-content">Post</span></a>
+                <a href="./post.html" class="sidebar-button"><span class="button-content">Messages</span></a>
+                <a href="./login.html" class="sidebar-button"><span class="button-content">Login</span></a>
+            </div>
+
+        <div class="profile">
+            <img id="current-user-pp" class="profile-img" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+            <span id="current-user">USERNAME</span>
+        </div>
+    </div>
     <div id="searchpage">
         <h1>Search</h1>
         <div id="searchbar-div">
             <input id="searchbar" type="text" placeholder="Search">
-            <button>Search</button>
+            <button type="submit"id="search-button">Search</button>
         </div>
         <div id="search-result">
             HET
         </div>
     </div>
-    <script src="search.js"></script>
+    <script type="module" src="search.js"></script>
 </body>

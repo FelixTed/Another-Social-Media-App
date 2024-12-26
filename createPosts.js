@@ -19,7 +19,6 @@ if (!token) {
 }
 let userObj;
 let postType = 'story';
-const BACKEND_URL = 'http://localhost:3000';
 
 // Add content to database
 async function publishContent() {
