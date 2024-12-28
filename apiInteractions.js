@@ -11,6 +11,17 @@ export async function getUserObjectById(userId) {
     }
 }
 
+export async function getUserObjectsByName(name) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/user/search/${name}`);
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        console.error('Error fetching users:', err);
+    }
+}
+
+
 export async function getStoryObjectById(storyId) {
     try {
         const response = await fetch(`${BACKEND_URL}/story/${storyId}`);

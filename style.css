@@ -170,17 +170,17 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: left;
-    align-items: center; /* Center entire content of the post */
-    text-align: center;  /* Center-align text */
+    align-items: center; 
+    text-align: center; 
 }
 
 .post-profile {
     font-family: 'Sour Gummy', serif;
     color: white;
-    display: inline-flex; /* Use inline-flex to avoid block-level stretching */
-    align-items: center; /* Vertically align image and text */
-    gap: 10px; /* Space between profile pic and username */
-    margin: 10px 0; /* Spacing above and below */
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px;
+    margin: 10px 0;
     width: 100%;
     justify-content: left;
 }

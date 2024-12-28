@@ -18,8 +18,24 @@
     width: 40%;
 }
 #search-result{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     background-color: rgb(0, 0, 41);
     height:100%;
     width:100%;
     margin-top: 5px;
+    padding-top: 5px;
+    overflow: scroll;
+}
+#search-result::-webkit-scrollbar{
+    display: none;
+}
+.user-list-element{
+    margin-left: 2%;
+    margin-right: 2%;
+    display: flex;
+    justify-content: space-between;
+    width:96%;
+    flex-direction: row;
 }

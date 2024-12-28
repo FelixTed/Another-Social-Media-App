@@ -1,5 +1,5 @@
 import { jwtDecode } from "https://esm.run/jwt-decode";
-import {getUserObjectById} from './apiInteractions.js'
+import {getUserObjectById, getUserObjectsByName} from './apiInteractions.js'
 
 let currentUser;
 const token = localStorage.getItem('token');
@@ -30,7 +30,24 @@ document.getElementById('search-button').addEventListener('click', () => {
 })
 
 async function displaySearchResult(term){
-    console.log('dajhsfdjsf')
+  
+    if(!term){
+        alert('You need to enter at least one character to search')
+        return
+    }
+    const userList = await getUserObjectsByName(term);
+    const listDiv = document.getElementById("search-result")
+    for (const user of userList){
+        listDiv.insertAdjacentHTML('beforeend',`
+            <div class="user-list-element">
+                <div class="profile">
+                    <img id="current-user-pp" class="profile-img" src=${user.imageUrl}>
+                    <span id="current-user">${user.name}</span>
+                </div>
+                <button class="follow-button">Follow</button>
+            </div>
+            `);
+    }
 }
 
 async function displayCurrUser(id) {
