@@ -7,7 +7,7 @@ async function postUser(formData) {
             body: formData
         });
 
-        const data = await response.json(); // Parse JSON even on failure
+        const data = await response.json();
 
         if (!response.ok) {
             throw new Error(data.message || 'Failed to post');
@@ -16,7 +16,7 @@ async function postUser(formData) {
         return data;
     } catch (err) {
         console.error('Error posting resource:', err);
-        throw err; // Re-throw the error so it can be caught in the caller
+        throw err;
     }
 }
 
@@ -68,7 +68,7 @@ document.getElementById('create-account-button').addEventListener('click', async
             window.location.href = 'index.html';
         } else {
             console.error('Account creation failed:', response.message);
-            alert(response.message); // Show the error message to the user
+            alert(response.message); 
         } 
     }catch(error){
         console.error('An unexpected error occurred:', error.message);
