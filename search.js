@@ -38,37 +38,43 @@ async function displaySearchResult(term){
     const userList = await getUserObjectsByName(term);
     const listDiv = document.getElementById("search-result")
     listDiv.innerHTML = '';
-    for (const user of userList){
-        if (user._id === currentUser){
-            continue;
-        }
-        let followStatus = '';
-        if (userObj.following.includes(user._id)){
-            followStatus = 'Unfollow';
-        }else{
-            followStatus = 'Follow';
-        }
-        listDiv.insertAdjacentHTML('beforeend',`
-            <div class="user-list-element">
+    for (const user of userList) {
+        if (user._id === currentUser) continue;
+
+        // Determine follow status
+        let followStatus = userObj.following.includes(user._id) ? 'Unfollow' : 'Follow';
+
+        // Insert the user element
+        listDiv.insertAdjacentHTML('beforeend', `
+            <div class="user-list-element" data-user-id="${user._id}">
                 <div class="profile">
-                    <img id="current-user-pp" class="profile-img" src=${user.imageUrl}>
-                    <span id="current-user">${user.name}</span>
+                    <img class="profile-img" src="${user.imageUrl}" alt="${user.name}">
+                    <span>${user.name}</span>
                 </div>
-                <button id="follow-button">${followStatus}</button>
+                <button class="follow-button">${followStatus}</button>
             </div>
-            `);
-        document.getElementById('follow-button').addEventListener('click',async () => {
-             userObj = await updateUser(currentUser, {following:user._id});
-            if (followStatus === 'Unfollow'){
-                userObj.following.
-                followStatus = 'Follow';
-            }else{
-                followStatus = 'Unfollow';
-            }
-            document.getElementById('follow-button').innerHTML = followStatus
-        })
-            
+        `);
     }
+
+    listDiv.addEventListener('click', async (event) => {
+        const target = event.target;
+
+        // Check if a follow button was clicked
+        if (target.classList.contains('follow-button')) {
+            const userElement = target.closest('.user-list-element');
+
+            // Update follow/unfollow status
+            const isUnfollow = target.textContent.trim() === 'Unfollow';
+            const updatedUser = await updateUser(currentUser, {
+                following: userElement.dataset.userId
+            });
+
+            // Update user object and button text
+            userObj = updatedUser;
+            target.textContent = isUnfollow ? 'Follow' : 'Unfollow';
+        }
+    });
+
 }
 
 async function displayCurrUser(id) {

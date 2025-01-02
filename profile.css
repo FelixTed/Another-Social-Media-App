@@ -1,0 +1,21 @@
+.profile-div{
+    display: flex;
+    background-color: green;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
+.user-profile{
+    background-color: red;
+    transform: scale(5);
+    width: 9%;
+    font-family:'Sour Gummy',serif;
+    color: white;
+    display: flex;
+    margin-top: 100px;
+    align-items: center;
+    cursor: pointer;
+}
+
