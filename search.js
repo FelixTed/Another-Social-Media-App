@@ -72,6 +72,11 @@ async function displaySearchResult(term){
             // Update user object and button text
             userObj = updatedUser;
             target.textContent = isUnfollow ? 'Follow' : 'Unfollow';
+        }else if(target.closest('.user-list-element')){
+            const userElement = target.closest('.user-list-element');
+
+            localStorage.setItem('selected-user',userElement.dataset.userId)
+            window.location.href = 'profile.html';
         }
     });
 

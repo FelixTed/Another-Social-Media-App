@@ -65,6 +65,7 @@ async function renderPosts(element){
 
     const divPostProfile = document.createElement('div');
     divPostProfile.setAttribute('class','post-profile');
+    divPostProfile.setAttribute('data-user-id',ownerObject._id)
 
     const profileImage = document.createElement('img');
     profileImage.setAttribute('class', 'profile-img');
@@ -152,6 +153,18 @@ async function renderPosts(element){
     divPost.appendChild(postCaption);
 
     postContainer.appendChild(divPost);
+
+    divPost.addEventListener('click', async (event) => {
+        const target = event.target;
+
+        // Check if a profile was clicked
+        if(target.closest('.post-profile')){
+            const userElement = target.closest('.post-profile');
+
+            localStorage.setItem('selected-user',userElement.dataset.userId)
+            window.location.href = 'profile.html';
+        }
+    });
 }
 
 async function returnStories() {
@@ -317,7 +330,7 @@ async function displayComments(selectedPost){
 
         const content = 
         `<div class = 'comment'>
-                <div class="profile">
+                <div class="profile" data-user-id="${commentOwner._id}">
                     <img class="profile-img" src=${commentOwner.imageUrl}>
                     <span>${commentOwner.name}</span>
                 </div>
@@ -329,6 +342,17 @@ async function displayComments(selectedPost){
 
     }
     
+    commentsContainer.addEventListener('click', async (event) => {
+            const target = event.target;
+    
+            // Check if a profile was clicked
+            if(target.closest('.profile')){
+                const userElement = target.closest('.profile');
+    
+                localStorage.setItem('selected-user',userElement.dataset.userId)
+                window.location.href = 'profile.html';
+            }
+        });
     const commentInput = document.createElement('input');
     commentInput.setAttribute('placeholder','Enter comment...');
 
