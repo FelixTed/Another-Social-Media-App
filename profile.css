@@ -35,7 +35,7 @@
     margin-bottom: 2%;
 }
 
-.post-history-box{
+#post-history-box{
     width: 100%;
     height: 75%;
     display: flex;
@@ -47,7 +47,7 @@
     
 }
 
-.post-history-box::-webkit-scrollbar {
+#post-history-box::-webkit-scrollbar {
     display: none;
 }
 

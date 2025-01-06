@@ -1,5 +1,5 @@
 import { jwtDecode } from "https://esm.run/jwt-decode";
-import {getUserObjectById,updateUser} from './apiInteractions.js'
+import {getUserObjectById,updateUser, getPostObjectById} from './apiInteractions.js'
 
 let currentUser;
 const token = localStorage.getItem('token');
@@ -32,7 +32,16 @@ followButton.addEventListener('click', async () => {
     followButton.textContent = isUnfollow ? 'Follow' : 'Unfollow';
 })
 
-
+async function displayPostHistory(){
+    const postHistoryBox = document.getElementById('post-history-box');
+    for (const postId of selectedUserObj.postHistory){
+        const post = await getPostObjectById(postId)
+        let previewHtml = `<div class="post-preview">
+                                <img src=${post.imageUrl} class="preview-image">
+                            </div>`
+        postHistoryBox.innerHTML += previewHtml
+    }
+}
 
 async function displayCurrUser(id) {
         // Displays the current username on the left sidebar
@@ -58,6 +67,8 @@ async function displayCurrUser(id) {
     }else{
         followButton.innerHTML = 'Follow';
     }
+
+    displayPostHistory()
 
 }
 
