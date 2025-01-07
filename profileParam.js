@@ -1,5 +1,7 @@
 import { jwtDecode } from "https://esm.run/jwt-decode";
-import {getUserObjectById,updateUser, getPostObjectById,updatePost, getCommentObjectById, postComment} from './apiInteractions.js'
+import {getUserObjectById,updateUser, getPostObjectById,updatePost, getCommentObjectById, postComment, deletePost} from './apiInteractions.js'
+const BACKEND_URL = 'http://localhost:3000'
+
 
 let currentUser;
 const token = localStorage.getItem('token');
@@ -17,24 +19,12 @@ if (!token) {
     console.log('Current user ID:', currentUser);
 }
 let userObj;
-let selectedUserObj;
 
-const followButton = document.getElementById('follow-button');
-followButton.addEventListener('click', async () => {
-    // Update follow/unfollow status
-    const isUnfollow = followButton.textContent.trim() === 'Unfollow';
-    const updatedUser = await updateUser(currentUser, {
-        following: selectedUser
-    });
 
-    // Update user object and button text
-    userObj = updatedUser;
-    followButton.textContent = isUnfollow ? 'Follow' : 'Unfollow';
-})
 
 async function displayPostHistory(){
     const postHistoryBox = document.getElementById('post-history-box');
-    for (const postId of selectedUserObj.postHistory){
+    for (const postId of userObj.postHistory){
         const post = await getPostObjectById(postId);
         let previewHtml = `<div class="post-preview">
                                 <img src=${post.imageUrl} class="preview-image" data-post=${encodeURIComponent(JSON.stringify(post))}>
@@ -45,7 +35,6 @@ async function displayPostHistory(){
     postHistoryBox.addEventListener('click', async (event) => {
             const target = event.target;
     
-            // Check if a follow button was clicked
             if (target.closest('.post-preview')) {
                 let postElement = JSON.parse(decodeURIComponent(event.target.dataset.post));
                 const selectedPostDiv = document.getElementById('selected-container');
@@ -56,12 +45,12 @@ async function displayPostHistory(){
                 
                                         <div class="post">
                                             <div class="post-profile">
-                                                <img class="profile-img" src=${selectedUserObj.imageUrl}>
-                                                <span>${selectedUserObj.name}</span>
+                                                <img class="profile-img" src=${userObj.imageUrl}>
+                                                <span>${userObj.name}</span>
                                             </div>
                                                 <img class="post-content" src=${postElement.imageUrl}>
                                                 <div class="post-icons">
-                                                    <i id="like" class="material-icons" style="color: white;">favorite</i>
+                                                    <button id="delete">DELETE</button>
                                                     <i id="comment" class="material-icons" style="color: white;">comment</i>
                                                 </div>
                                                 <span class="post-caption"> ${postElement.caption}</span>
@@ -73,37 +62,15 @@ async function displayPostHistory(){
                     selectedPostDiv.style.display = 'none';
                 })
 
-                const likesIcon = document.getElementById('like');
-                likesIcon.setAttribute('class','material-icons');
-                if (postElement.likedBy.includes(currentUser)){
-                    likesIcon.setAttribute('style','color:red;cursor:pointer;');
-                }
-                else{
-                    likesIcon.setAttribute('style','color:white;cursor:pointer');
-                }
-                
+                document.getElementById('delete').addEventListener('click', async () =>{
+                    selectedPostDiv.innerHTML = '';
+                    selectedPostDiv.style.display = 'none';
+                    await deletePost(postElement._id);
+                    userObj = await updateUser(postElement.ownerId, {postHistory:postElement._id});
+                    postHistoryBox.innerHTML = ''
+                    displayPostHistory();
 
-                let isProcessing = false;
-                likesIcon.addEventListener('click', async () => {
-                    if (isProcessing) return;
-                    try{
-                        isProcessing = true;
-                        postElement = await updatePost(postElement._id,{likedBy:currentUser});
-
-                        if (postElement.likedBy.includes(currentUser)){
-                            likesIcon.setAttribute('style','color:red;cursor:pointer;');
-                            console.log(postElement.likedBy)
-                        }else{
-                            likesIcon.setAttribute('style','color:white;cursor:pointer;');
-                        }
-
-                        
-                    }catch(err){
-                        console.log('Error updating like status: '+ err);
-                    }finally{
-                        isProcessing = false;
-                    }
-                });
+                })
 
                 const commentIcon = document.getElementById('comment');
             
@@ -201,26 +168,47 @@ async function displayCurrUser(id) {
 
     // Displays the selected user
     const displaySelUser = document.getElementById('selected-user');
-    selectedUserObj = await getUserObjectById(selectedUser);
 
 
 
-    displaySelUser.innerHTML = selectedUserObj.name;
+    displaySelUser.innerHTML = userObj.name;
     const displaySelUserPP = document.getElementById('selected-user-pp');
-    displaySelUserPP.setAttribute('src',selectedUserObj.imageUrl);
+    displaySelUserPP.setAttribute('src',userObj.imageUrl);
 
-    displayUser.addEventListener('click', () => {
-        window.location.href = 'profileParam.html';
-    });
-    displayUserPP.addEventListener('click', () => {
-        window.location.href = 'profileParam.html';
-    });
+    document.getElementById('change-name-button').addEventListener('click', async ()=>{
+        let newName = document.getElementById('change-name-input').value;
+        if (newName.length >= 3 && newName.length <= 20){
+            userObj = await updateUser(currentUser,{'name':newName});
+            displayCurrUser(currentUser);
+        }
+    })
 
-    if (userObj.following.includes(selectedUser)){
-        followButton.innerHTML = 'Unfollow';
-    }else{
-        followButton.innerHTML = 'Follow';
-    }
+    document.getElementById('change-profile-picture-button').addEventListener('click', async () => {
+        let newPP = document.getElementById('change-profile-picture-input');
+    
+        if (!newPP.files[0]) {
+            alert('You must upload a file first');
+        } else {
+            const formData = new FormData();
+            formData.append('profilePic', newPP.files[0]);
+    
+            try {
+                const response = await fetch(`${BACKEND_URL}/user/${currentUser}`, {
+                    method: 'PATCH',
+                    body: formData,
+                });
+    
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    displayCurrUser(currentUser);
+                } else {
+                    console.error('Error updating profile picture:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    });
 
     displayPostHistory()
 

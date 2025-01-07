@@ -93,6 +93,13 @@ displayUser.innerHTML = userObj.name;
 const displayUserPP = document.getElementById('current-user-pp');
 displayUserPP.setAttribute('src',userObj.imageUrl);
 
+displayUser.addEventListener('click', () => {
+    window.location.href = 'profileParam.html';
+});
+displayUserPP.addEventListener('click', () => {
+    window.location.href = 'profileParam.html';
+});
+
 }
 
 // Displays the current user on the bottom left + store it in a variable

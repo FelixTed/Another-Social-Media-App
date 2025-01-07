@@ -399,7 +399,12 @@ async function displayCurrUser(id) {
     // Displays the current user on the left sidebar
     const displayUserPP = document.getElementById('current-user-pp');
     displayUserPP.setAttribute('src',userObj.imageUrl);
-
+    displayUser.addEventListener('click', () => {
+        window.location.href = 'profileParam.html';
+    });
+    displayUserPP.addEventListener('click', () => {
+        window.location.href = 'profileParam.html';
+    });
     setupPage();
 
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="profile.css">
+    <title>Another Social Media Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+</html>
+
+<body>
+    <div class="page">
+        <div id="sidebar">
+            <div class="title">
+                <i class="material-icons" style="color: white;">handshake</i>
+                <h3 style="color: white;">Another Social Media App</h3>
+            </div>
+                <div class="side-buttons-div">
+                    <a href="./index.html" class="sidebar-button"><span class="button-content">Home</span></a>
+                    <a href="./search.html" class="sidebar-button"><span class="button-content">Search</span></a>
+                    <a href="./post.html" class="sidebar-button"><span class="button-content">Post</span></a>
+                    <a href="./login.html" class="sidebar-button"><span class="button-content">Login</span></a>
+                </div>
+
+            <div class="profile">
+                <img id="current-user-pp" class="profile-img" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+                <span id="current-user">USERNAME</span>
+            </div>
+        </div>
+        <div class="vertical-div">
+            <div class="profile-div">
+
+                <div class="user-profile">
+                    <img id="selected-user-pp" class="profile-img" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+                    <span id="selected-user">USERNAME</span>
+                </div>
+            </div>
+            <div id="change-name-div">
+                <input id="change-name-input" placeholder="between 3 and 20 characters" type="text">
+                <button id="change-name-button">Change name</button>
+            </div>
+            <div id="change-profile-picture-div">
+                <input id="change-profile-picture-input" type="file">
+                <button id="change-profile-picture-button">Change profile picture</button>
+            </div>
+
+            <div id="post-history-box">
+                
+                <!-- <div class="post-preview">
+                    <img src='https://hips.hearstapps.com/hmg-prod/images/thanos-squid-game-6776bf9105ae3.jpg?crop=1xw:0.8888888888888888xh;center,top&resize=1200:*'class="preview-image">
+                </div> -->
+            </div>
+            <div id="selected-container">
+                <!-- <div id="cross-div">
+                    <i class="material-icons">close</i>
+                </div> -->
+                    <!-- <div class="post">
+                        <div class="post-profile">
+                            <img class="profile-img" src="">
+                            <span>USERNAME</span>
+                        </div>
+                            <img class="post-content" src="">
+                            <div class="post-icons">
+                                <i class="material-icons" style="color: white;">favorite</i>
+                                <i class="material-icons" style="color: white;">comment</i>
+                            </div>
+                            <span class="post-caption"> TE|STesk jsafshdf</span>
+                            
+                    </div> -->
+
+            </div>
+            <div id="comments-container">
+                
+
+            </div>
+        </div>
+    </div>
+
+    <script src="profileParam.js" type="module"></script>
+</body>

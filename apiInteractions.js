@@ -153,3 +153,20 @@ export async function postStory(formData){
         console.error('Error posting ressource: ', err);
     }
 }
+
+export async function deletePost(postId){
+    try{
+        const response = await fetch(`${BACKEND_URL}/post/${postId}`, {
+            method:'DELETE',
+        });
+
+        if(!response.ok){
+            throw new Error("Failed to delete");
+        }
+
+        const data = await response.json();
+        return data;
+    }catch(err){
+        console.error('Error deleting ressource: ', err);
+    }
+}
