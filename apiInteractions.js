@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://another-social-media-api.onrender.com';
+const BACKEND_URL = 'http://localhost:3000';
 
 export async function getUserObjectById(userId) {
     try {

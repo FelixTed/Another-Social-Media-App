@@ -1,6 +1,6 @@
 import { jwtDecode } from "https://esm.run/jwt-decode";
 import {getUserObjectById,updateUser, getPostObjectById,updatePost, getCommentObjectById, postComment, deletePost} from './apiInteractions.js'
-const BACKEND_URL = 'https://another-social-media-api.onrender.com'
+const BACKEND_URL = 'http://localhost:3000'
 
 
 let currentUser;
