@@ -37,7 +37,7 @@ async function displayPostHistory(){
     for (const postId of selectedUserObj.postHistory){
         const post = await getPostObjectById(postId);
         let previewHtml = `<div class="post-preview">
-                                <img src=${post.imageUrl} class="preview-image" data-post=${encodeURIComponent(JSON.stringify(post))}>
+                                <img src=${post.content} class="preview-image" data-post=${encodeURIComponent(JSON.stringify(post))}>
                             </div>`;
         postHistoryBox.innerHTML += previewHtml;
     }
@@ -56,10 +56,10 @@ async function displayPostHistory(){
                 
                                         <div class="post">
                                             <div class="post-profile">
-                                                <img class="profile-img" src=${selectedUserObj.imageUrl}>
+                                                <img class="profile-img" src=${selectedUserObj.profilePic}>
                                                 <span>${selectedUserObj.name}</span>
                                             </div>
-                                                <img class="post-content" src=${postElement.imageUrl}>
+                                                <img class="post-content" src=${postElement.content}>
                                                 <div class="post-icons">
                                                     <i id="like" class="material-icons" style="color: white;">favorite</i>
                                                     <i id="comment" class="material-icons" style="color: white;">comment</i>
@@ -145,7 +145,7 @@ async function displayComments(selectedPost){
         const content = 
         `<div class = 'comment'>
                 <div class="profile" data-user-id="${commentOwner._id}">
-                    <img class="profile-img" src=${commentOwner.imageUrl}>
+                    <img class="profile-img" src=${commentOwner.profilePic}>
                     <span>${commentOwner.name}</span>
                 </div>
                 <span>${comment.content}</span>
@@ -197,7 +197,7 @@ async function displayCurrUser(id) {
     displayUser.innerHTML = userObj.name;
     // Displays the current user on the left sidebar
     const displayUserPP = document.getElementById('current-user-pp');
-    displayUserPP.setAttribute('src',userObj.imageUrl);
+    displayUserPP.setAttribute('src',userObj.profilePic);
 
     // Displays the selected user
     const displaySelUser = document.getElementById('selected-user');
@@ -207,7 +207,7 @@ async function displayCurrUser(id) {
 
     displaySelUser.innerHTML = selectedUserObj.name;
     const displaySelUserPP = document.getElementById('selected-user-pp');
-    displaySelUserPP.setAttribute('src',selectedUserObj.imageUrl);
+    displaySelUserPP.setAttribute('src',selectedUserObj.profilePic);
 
     displayUser.addEventListener('click', () => {
         window.location.href = 'profileParam.html';

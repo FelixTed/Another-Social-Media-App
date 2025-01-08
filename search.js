@@ -48,7 +48,7 @@ async function displaySearchResult(term){
         listDiv.insertAdjacentHTML('beforeend', `
             <div class="user-list-element" data-user-id="${user._id}">
                 <div class="profile">
-                    <img class="profile-img" src="${user.imageUrl}" alt="${user.name}">
+                    <img class="profile-img" src="${user.profilePic}" alt="${user.name}">
                     <span>${user.name}</span>
                 </div>
                 <button class="follow-button">${followStatus}</button>
@@ -91,7 +91,7 @@ displayUser.innerHTML = userObj.name;
 
 // Displays the current user on the left sidebar
 const displayUserPP = document.getElementById('current-user-pp');
-displayUserPP.setAttribute('src',userObj.imageUrl);
+displayUserPP.setAttribute('src',userObj.profilePic);
 
 displayUser.addEventListener('click', () => {
     window.location.href = 'profileParam.html';

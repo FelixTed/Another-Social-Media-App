@@ -69,7 +69,7 @@ async function renderPosts(element){
 
     const profileImage = document.createElement('img');
     profileImage.setAttribute('class', 'profile-img');
-    profileImage.setAttribute('src', ownerObject.imageUrl);
+    profileImage.setAttribute('src', ownerObject.profilePic);
 
     const username = document.createElement('span');
     username.setAttribute('style','cursor:pointer');
@@ -77,7 +77,7 @@ async function renderPosts(element){
 
     const postContent = document.createElement('img');
     postContent.setAttribute('class', 'post-content');
-    postContent.setAttribute('src', element.imageUrl);
+    postContent.setAttribute('src', element.content);
 
     const iconsDiv = document.createElement('div');
     iconsDiv.setAttribute('class', 'post-icons');
@@ -186,7 +186,7 @@ async function returnStories() {
     
         const img = document.createElement('img');
         img.setAttribute('class', 'profile-img');
-        img.src = currentUser.imageUrl;
+        img.src = currentUser.profilePic;
         img.alt = currentUser.name;
     
         const name = document.createElement('span');
@@ -234,7 +234,7 @@ async function displayStories(selectedUser, storiesOnFeed) {
 
         const profile = `
             <div class="profile">
-                <img class="profile-img" src="${currentUser.imageUrl}">
+                <img class="profile-img" src="${currentUser.profilePic}">
                 <span>${currentUser.name}</span>
             </div>`;
         
@@ -245,7 +245,7 @@ async function displayStories(selectedUser, storiesOnFeed) {
         closeStoriesScreen.addEventListener('click', closeStories);
 
         const currentStoryContent = document.createElement('img');
-        currentStoryContent.setAttribute('src', currentStory.imageUrl);
+        currentStoryContent.setAttribute('src', currentStory.content);
         currentStoryContent.setAttribute('class', 'story-image');        
         
         storiesScreen.appendChild(progressBar);
@@ -331,7 +331,7 @@ async function displayComments(selectedPost){
         const content = 
         `<div class = 'comment'>
                 <div class="profile" data-user-id="${commentOwner._id}">
-                    <img class="profile-img" src=${commentOwner.imageUrl}>
+                    <img class="profile-img" src=${commentOwner.profilePic}>
                     <span>${commentOwner.name}</span>
                 </div>
                 <span>${comment.content}</span>
@@ -398,7 +398,7 @@ async function displayCurrUser(id) {
 
     // Displays the current user on the left sidebar
     const displayUserPP = document.getElementById('current-user-pp');
-    displayUserPP.setAttribute('src',userObj.imageUrl);
+    displayUserPP.setAttribute('src',userObj.profilePic);
     displayUser.addEventListener('click', () => {
         window.location.href = 'profileParam.html';
     });
