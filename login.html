@@ -2,6 +2,7 @@
 <html>
     <title>Another Social Media Page</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,11 +11,14 @@
 </html>
 
 <body>
-    <form id="loginForm">
-        <input type="text" id="name" placeholder="Username" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit">Log In</button>
-        <button id="create-account-button">Create Account</button>
-    </form>
-    <script src="login.js"></script>
+    <div id="login-div">
+        <h1 id="title">Another Social Media App</h1>
+        <form id="loginForm">
+            <input type="text" id="name" placeholder="Username" required />
+            <input type="password" id="password" placeholder="Password" required />
+            <button type="submit">Log In</button>
+            <button id="create-account-button">Create Account</button>
+        </form>
+        <script src="login.js"></script>
+    </div>
 </body>

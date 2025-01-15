@@ -13,12 +13,17 @@ body {
     flex-direction: column;
     width: 80%;
 }
-
+form {
+    margin: 0;
+    padding: 0;
+  }
 .title-container {
     font-family:'Sour Gummy',serif;
     height: 100%;
 }
-
+#title{
+    font-family:'Sour Gummy',serif;
+}
 .page{
     display: flex;
     width: 100%;

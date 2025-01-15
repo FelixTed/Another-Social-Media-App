@@ -1,0 +1,49 @@
+#login-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+input{
+    margin-bottom: 1%;
+    background-color: rgb(5, 0, 75);
+    color: white;
+    font-family:'Sour Gummy',serif;
+}
+button{
+    color: white;
+    margin-bottom:1%;
+    background: none;
+    border:none;
+    height: 2vh;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family:'Sour Gummy',serif;
+}
+button:hover{
+    background-color: rgba(160, 160, 160, 0.415);
+    cursor: pointer;
+}
+
+button:hover .button-content{
+    transform: scale(1.2);
+}
+button:active .button-content{
+    color: rgb(141, 140, 140);
+}
+
+#loginForm{
+    background-color: rgb(0, 0, 77);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1%;
+    width: 30%;
+    height: fit-content;
+}
