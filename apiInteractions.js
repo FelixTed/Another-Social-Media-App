@@ -1,8 +1,10 @@
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://another-social-media-api.onrender.com';
 
 export async function getUserObjectById(userId) {
     try {
-        const response = await fetch(`${BACKEND_URL}/user/${userId}`);
+        const response = await fetch(`${BACKEND_URL}/user/${userId}`, {
+            credentials: 'include',
+        });
         const data = await response.json();
         //console.log('User Object:', data);
         return data;
@@ -13,7 +15,9 @@ export async function getUserObjectById(userId) {
 
 export async function getUserObjectsByName(name) {
     try {
-        const response = await fetch(`${BACKEND_URL}/user/search/${name}`);
+        const response = await fetch(`${BACKEND_URL}/user/search/${name}`, {
+            credentials: 'include',
+        });
         const data = await response.json();
         return data;
     } catch (err) {
@@ -104,7 +108,8 @@ export async function updateUser(userId, value){
             headers: {
                 'Content-Type': 'application/json',
             },
-            body:JSON.stringify(value)
+            body:JSON.stringify(value),
+            credentials: 'include',
         });
 
         if(!response.ok){

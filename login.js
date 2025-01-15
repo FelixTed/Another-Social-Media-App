@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://another-social-media-api.onrender.com';
 
 async function postUser(formData) {
     try {
@@ -27,10 +27,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     console.log(password)
     try {
-        const response = await fetch('http://localhost:3000/user/login', {
+        const response = await fetch(`${BACKEND_URL}/user/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, password }),
+            credentials:'include',
         });
 
         const data = await response.json();

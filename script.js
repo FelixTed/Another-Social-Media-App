@@ -2,9 +2,6 @@ import { jwtDecode } from "https://esm.run/jwt-decode";
 import { getUserObjectById,getStoryObjectById,getPostObjectById,getCommentObjectById,postComment,updatePost } from "./apiInteractions.js";
 
 
-const BACKEND_URL = 'http://localhost:3000';
-
-
 //You want to be logged in as a current user, this will be expanded upon later when API is done
 let currentUser;
 const token = localStorage.getItem('token');
