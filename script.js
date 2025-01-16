@@ -41,8 +41,9 @@ async function returnPosts(){
     postsOnFeed.sort((a, b) => new Date(b.date) - new Date(a.date));
     // Get the next set of posts
     const newPosts = postsOnFeed.slice(loadedPosts, loadedPosts + postsPerLoads);
+    console.log(newPosts);
     for(const post of newPosts){
-        renderPosts(post);
+        await renderPosts(post);
     }
     // Update the count of loaded posts
     loadedPosts += newPosts.length;
