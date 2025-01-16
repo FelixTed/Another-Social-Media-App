@@ -17,6 +17,7 @@ form {
     margin: 0;
     padding: 0;
   }
+
 .title-container {
     font-family:'Sour Gummy',serif;
     height: 100%;
@@ -42,6 +43,7 @@ form {
     width: 20%;
 }
 .sidebar-button{
+    font-family:'Sour Gummy',serif;
     color: white;
     margin-bottom:9vh;
     background: none;

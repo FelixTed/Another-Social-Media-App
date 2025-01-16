@@ -13,6 +13,18 @@
     justify-content: center;
     flex-direction: row;
 }
+button{
+    color: white;
+    margin-bottom:1%;
+    background: none;
+    border:none;
+    height: 2vh;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family:'Sour Gummy',serif;
+}
 
 #searchbar{
     width: 40%;
