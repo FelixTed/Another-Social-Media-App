@@ -25,7 +25,17 @@ button{
     justify-content: center;
     font-family:'Sour Gummy',serif;
 }
+button:hover{
+    background-color: rgba(160, 160, 160, 0.415);
+    cursor: pointer;
+}
 
+button:hover .button-content{
+    transform: scale(1.2);
+}
+button:active .button-content{
+    color: rgb(141, 140, 140);
+}
 .user-profile{
     transform: scale(3);
     width: 9%;
